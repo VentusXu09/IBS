@@ -100,8 +100,8 @@ public class Sample extends RealmObject {
         return MBS;
     }
 
-    public void setMBS(BaseStation MBS) {
-        this.MBS = MBS;
+    public void setMBS() {
+        this.MBS = null == BSList.first() ? new BaseStation().emptyInstance() : BSList.first();
     }
 
     public Signal getSignal() {

@@ -7,11 +7,20 @@ import io.realm.RealmObject;
  */
 
 public class Signal extends RealmObject {
+    private int cellid;
     private int dbm;
     private boolean isGsm;
     private int signalToNoiseRatio;
     private int evdoEcio;
     private int level;
+
+    public int getCellid() {
+        return cellid;
+    }
+
+    public void setCellid(int cellid) {
+        this.cellid = cellid;
+    }
 
     public int getDbm() {
         return dbm;
@@ -56,7 +65,8 @@ public class Signal extends RealmObject {
     @Override
     public String toString() {
         return "Signal{" +
-                "dbm=" + dbm +
+                "Cellid" + cellid +
+                ", dbm=" + dbm +
                 ", isGsm=" + isGsm +
                 ", signalToNoiseRatio=" + signalToNoiseRatio +
                 ", evdoEcio=" + evdoEcio +

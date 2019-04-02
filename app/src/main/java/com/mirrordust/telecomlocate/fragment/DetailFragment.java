@@ -123,6 +123,7 @@ public class DetailFragment extends Fragment {
         //Mobile signal strength
         detailItems.add(new DetailItem("", ""));
         detailItems.add(new DetailItem("[ Mobile signal strength ]", ""));
+        detailItems.add(new DetailItem("CellId", Integer.toString(sample.getSignal().getCellid())));
         detailItems.add(new DetailItem("dbm", Integer.toString(sample.getSignal().getDbm())));
         detailItems.add(new DetailItem("isGsm", Boolean.toString(sample.getSignal().isGsm())));
         detailItems.add(new DetailItem("signalToNoiseRatio", Integer.toString(sample.getSignal().getSignalToNoiseRatio())));

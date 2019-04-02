@@ -3,6 +3,7 @@ package com.mirrordust.telecomlocate.model;
 import android.provider.Settings;
 import android.util.Log;
 
+import com.mirrordust.telecomlocate.entity.BaseStation;
 import com.mirrordust.telecomlocate.entity.DataSet;
 import com.mirrordust.telecomlocate.entity.Sample;
 import com.mirrordust.telecomlocate.interf.OnAddOrUpdateSampleListener;
@@ -25,11 +26,13 @@ public class DataHelper {
         realm.executeTransactionAsync(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
+                if (isEmptySample(sample)) return;
                 realm.copyToRealmOrUpdate(sample);
             }
         }, new Realm.Transaction.OnSuccess() {
             @Override
             public void onSuccess() {
+                if (isEmptySample(sample)) return;
                 onAddOrUpdateSampleListener.onAddOrUpdateSample();
                 Log.e(TAG, "addSampleAsync success");
             }
@@ -231,6 +234,11 @@ public class DataHelper {
                 // TODO: 2017/07/26/026 delete all samples error
             }
         });
+    }
+
+    public static boolean isEmptySample(Sample sample) {
+        //TODO: more precise check mehtod
+        return sample.getLatLng().isEmpty();
     }
 
 

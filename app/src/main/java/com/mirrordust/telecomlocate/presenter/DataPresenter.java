@@ -201,7 +201,7 @@ public class DataPresenter implements DataContract.Presenter {
     }
 
     private String buildSignalString(Signal signal) {
-        return String.valueOf(signal.getDbm()) + sep + signal.isGsm() + sep +
+        return String.valueOf(signal.getCellid() + sep + signal.getDbm()) + sep + signal.isGsm() + sep +
                 signal.getSignalToNoiseRatio() + sep +
                 signal.getEvdoEcio() + sep + signal.getLevel();
     }

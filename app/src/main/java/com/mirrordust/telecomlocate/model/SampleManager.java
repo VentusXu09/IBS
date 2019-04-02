@@ -67,13 +67,7 @@ public class SampleManager {
                             latLng.setSpeed(location.getSpeed());
                             record.setLatLng(latLng);
                         } else {
-                            LatLng latLng = new LatLng();
-                            latLng.setLatitude(0);
-                            latLng.setLongitude(0);
-                            latLng.setAltitude(0);
-                            latLng.setAccuracy(0);
-                            latLng.setSpeed(0);
-                            record.setLatLng(latLng);
+                            record.setLatLng(LatLng.createEmptyLatLng());
                         }
                         if (cellularTowers != null) {
                             RealmList<BaseStation> cellularTowerRealmList = new RealmList<>();
@@ -84,7 +78,7 @@ public class SampleManager {
                         }
                         record.setBtry(battery);
                         record.setSignal(signalRecord);
-                        record.setMBS(mBaseStationManager.getConnectedTower());
+                        record.setMBS();
                         record.setGm(geomagnetic);
                         record.setBaro(barometric);
 
@@ -113,7 +107,7 @@ public class SampleManager {
                         }
                         record.setBtry(battery);
                         record.setSignal(signalRecord);
-                        record.setMBS(mBaseStationManager.getConnectedTower());
+                        record.setMBS();
                         record.setGm(geomagnetic);
                         return record;
                     }

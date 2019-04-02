@@ -103,10 +103,14 @@ public class SampleService extends Service {
                 .setContentTitle(getString(R.string.app_name))
                 .setContentText("Sample telco-data")
                 .setWhen(System.currentTimeMillis())
-                .setSmallIcon(R.mipmap.ic_launcher)
+                .setSmallIcon(R.drawable.ic_launcher_48dp)
                 .setContentIntent(contentIntent)
                 .build();
-        startForeground(NOTIFICATION_ID, notification);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            startForeground(NOTIFICATION_ID, notification);
+        } else {
+            this.startService(nfIntent);
+        }
         return mBinder;
     }
 

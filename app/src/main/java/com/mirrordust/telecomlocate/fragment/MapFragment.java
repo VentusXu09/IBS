@@ -1,6 +1,8 @@
 package com.mirrordust.telecomlocate.fragment;
 
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -8,16 +10,28 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
+import com.mapbox.geojson.Feature;
+import com.mapbox.geojson.FeatureCollection;
+import com.mapbox.geojson.LineString;
+import com.mapbox.geojson.Point;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
+import com.mapbox.mapboxsdk.maps.Style;
+import com.mapbox.mapboxsdk.style.layers.LineLayer;
+import com.mapbox.mapboxsdk.style.layers.Property;
+import com.mapbox.mapboxsdk.style.layers.PropertyFactory;
+import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
 import com.mirrordust.telecomlocate.R;
 import com.mirrordust.telecomlocate.activity.SampleDetailActivity;
 import com.mirrordust.telecomlocate.entity.Sample;
 import com.mirrordust.telecomlocate.model.DataHelper;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MapFragment extends Fragment {
 
@@ -38,13 +52,6 @@ public class MapFragment extends Fragment {
         mMapView.onCreate(savedInstanceState);
         final SampleDetailActivity parentActivity = (SampleDetailActivity) getActivity();
         setPoint(parentActivity);
-//        mMapView.getMapAsync(new OnMapReadyCallback() {
-//            @Override
-//            public void onMapReady(MapboxMap mapboxMap) {
-//                Log.e("地图view","onMapReady");
-//                showPoints(mapboxMap, parentActivity.getSampleId());
-//            }
-//        });
         return frameLayout;
     }
 
@@ -84,6 +91,26 @@ public class MapFragment extends Fragment {
         mMapView.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady(MapboxMap mapboxMap) {
+                mapboxMap.setStyle(Style.OUTDOORS, new Style.OnStyleLoaded() {
+                    @Override
+                    public void onStyleLoaded(@NonNull Style style) {
+                        //init route points
+                        List<Point> routeCoordinates = new ArrayList<>();
+
+                        style.addSource(new GeoJsonSource("line-source",
+                                FeatureCollection.fromFeatures(new Feature[] {Feature.fromGeometry(
+                                        LineString.fromLngLats(routeCoordinates)
+                                )})));
+
+                        style.addLayer(new LineLayer("linelayer", "line-source").withProperties(
+                                PropertyFactory.lineDasharray(new Float[] {0.01f, 2f}),
+                                PropertyFactory.lineCap(Property.LINE_CAP_ROUND),
+                                PropertyFactory.lineJoin(Property.LINE_JOIN_ROUND),
+                                PropertyFactory.lineWidth(5f),
+                                PropertyFactory.lineColor(Color.parseColor("#e55e5e"))
+                        ));
+                    }
+                });
                 showPoints(mapboxMap);
             }
         });

@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.mirrordust.telecomlocate.R;
 import com.mirrordust.telecomlocate.pojo.DetailItem;
+import com.mirrordust.telecomlocate.util.TextUtils;
 
 import java.util.List;
 
@@ -37,7 +38,7 @@ public class SampleDetailAdapter extends RecyclerView.Adapter<SampleDetailAdapte
         holder.detailItemTitle.setText(detailItem.getTitle());
         holder.detailItemValue.setText(detailItem.getValue());
         // set background color
-        if (detailItem.getValue().equals("")) {
+        if (TextUtils.isEmpty(detailItem.getValue())) {
             // a new section of details
             holder.itemView.setBackgroundColor(
                     ContextCompat.getColor(

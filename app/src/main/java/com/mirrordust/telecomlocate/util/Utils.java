@@ -3,6 +3,7 @@ package com.mirrordust.telecomlocate.util;
 import android.util.Log;
 
 import com.mirrordust.telecomlocate.entity.BaseStation;
+import com.mirrordust.telecomlocate.entity.Constants;
 import com.mirrordust.telecomlocate.entity.LatLng;
 
 import java.lang.reflect.Field;
@@ -96,5 +97,28 @@ public class Utils {
             value.append(fieldValues.get(i).toString());
         }
         return new String[]{name.toString(), value.toString()};
+    }
+
+    /**
+     * Calculate dbm according to different BaseStation Type
+     * @param dbm The value of dbm depends on the type
+     *            GSM: {@link android.telephony.SignalStrength} getGsmSignalStrength()
+     *            LTE: Integer.parseInt(SignalStrength.toString()[8])
+     *            CDMA: {@link android.telephony.SignalStrength} getCdmaDbm()
+     * @param type
+     * @return
+     */
+    public static int DbmCalculator(int dbm, Constants.BaseStationType type) {
+        switch (type) {
+            case GSM:
+                dbm = -113 + 2 * dbm;
+                break;
+            case LTE:
+                dbm = dbm - 140;
+                break;
+            case CDMA:
+                break;
+        }
+        return dbm;
     }
 }

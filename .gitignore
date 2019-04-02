@@ -4,6 +4,7 @@
 /.idea/libraries
 /.idea/caches
 .DS_Store
+*.iml
 /build
 /captures
 .externalNativeBuild

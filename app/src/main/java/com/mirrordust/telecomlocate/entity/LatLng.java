@@ -53,6 +53,21 @@ public class LatLng extends RealmObject {
         this.speed = speed;
     }
 
+    public static LatLng createEmptyLatLng() {
+        LatLng emptyLatLng = new LatLng();
+        emptyLatLng.setLatitude(0);
+        emptyLatLng.setLongitude(0);
+        emptyLatLng.setAltitude(0);
+        emptyLatLng.setAccuracy(0);
+        emptyLatLng.setSpeed(0);
+        return emptyLatLng;
+    }
+
+    public boolean isEmpty() {
+        return this.latitude == 0
+                && this.altitude == 0;
+    }
+
     @Override
     public String toString() {
         return "LatLng{" +

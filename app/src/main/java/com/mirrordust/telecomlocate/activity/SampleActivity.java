@@ -40,6 +40,9 @@ import com.mirrordust.telecomlocate.adapter.SampleAdapter;
 import com.mirrordust.telecomlocate.interf.SampleContract;
 import com.mirrordust.telecomlocate.presenter.SamplePresenter;
 
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
+
 public class SampleActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, SampleContract.View {
 
@@ -70,6 +73,8 @@ public class SampleActivity extends AppCompatActivity
 
         // Create the presenter
         setPresenter(new SamplePresenter(this));
+        Realm.init(getContext());
+        Realm.setDefaultConfiguration(new RealmConfiguration.Builder().deleteRealmIfMigrationNeeded().build());
         mPresenter.subscribe();
         mPresenter.bindService(this);
 

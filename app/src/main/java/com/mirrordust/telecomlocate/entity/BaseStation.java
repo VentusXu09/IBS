@@ -7,6 +7,30 @@ import io.realm.RealmObject;
  */
 
 public class BaseStation extends RealmObject {
+    public BaseStation newInstance(int mcc, int mnc, int lac, int cid, int arfcn, int bsic_psc_pci, double lon, double lat, int asuLevel, int signalLevel, int dbm, String type) {
+        BaseStation instance = new BaseStation();
+        instance.setMcc(mcc);
+        instance.setMnc(mnc);
+        instance.setLac(lac);
+        instance.setCid(cid);
+        instance.setArfcn(arfcn);
+        instance.setBsic_psc_pci(bsic_psc_pci);
+        instance.setLon(lon);
+        instance.setLat(lat);
+        instance.setAsuLevel(asuLevel);
+        instance.setSignalLevel(signalLevel);
+        instance.setDbm(dbm);
+        instance.setType(type);
+        return instance;
+    }
+
+    public BaseStation newInstance(int mcc, int mnc, int lac, int cid, int arfcn, int bsic_psc_pci, double lon, double lat, String type) {
+        return newInstance(mcc, mnc, lac, cid, arfcn, bsic_psc_pci, lon, lat, 0,0,0, type);
+    }
+
+    public BaseStation emptyInstance() {
+        return newInstance(0,0,0,0,0,0,0.0d, 0.0d, "");
+    }
 
     private int mcc;            // Mobile Country Code
 
@@ -16,7 +40,7 @@ public class BaseStation extends RealmObject {
 
     private int cid;            // Cell Identity
 
-    private int arfcn;          // Absolute RF Channel Number (or UMTS Absolute RF Channel Number for WCDMA)
+    private int arfcn;          // Absolute RF Channel Number (or UMTS Absolute RF Channel Number for WCDMA) (MinSdk 24/Android 7.0)
 
     private int bsic_psc_pci;   /* bsic for GSM, psc for WCDMA, pci for LTE,
                                    GSM has #getPsc() but always get Integer.MAX_VALUE,
@@ -134,6 +158,8 @@ public class BaseStation extends RealmObject {
     public void setType(String type) {
         this.type = type;
     }
+
+
 
     @Override
     public String toString() {

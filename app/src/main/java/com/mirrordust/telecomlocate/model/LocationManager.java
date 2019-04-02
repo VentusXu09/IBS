@@ -2,6 +2,7 @@ package com.mirrordust.telecomlocate.model;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.location.Criteria;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -55,13 +56,29 @@ public class LocationManager {
         mLocationManager = (android.location.LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE);
     }
 
+    private String getProvider() {
+        Criteria criteria =  new Criteria();
+
+        criteria.setAccuracy(Criteria.ACCURACY_FINE);
+
+        criteria.setAltitudeRequired(true);
+
+        criteria.setBearingRequired(true);
+
+        criteria.setCostAllowed(true);
+
+        criteria.setPowerRequirement(Criteria.POWER_LOW);
+
+        return mLocationManager.getBestProvider(criteria, true);
+    }
+
     private void startListening() {
         Log.v(TAG, "start request listener");
 
         if (ContextCompat.checkSelfPermission(mContext, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
                 || ContextCompat.checkSelfPermission(mContext, android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
-            String provider = android.location.LocationManager.GPS_PROVIDER;
+            String provider = getProvider();
             if (!mLocationManager.isProviderEnabled(provider)) {
                 Log.v(TAG, "Provider not available = " + provider);
                 mLocationOnSubscribe.onNext(null);

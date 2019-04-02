@@ -1,20 +1,27 @@
 package com.mirrordust.telecomlocate.model;
 
 import android.content.Context;
+import android.telephony.CellIdentityCdma;
 import android.telephony.CellIdentityGsm;
 import android.telephony.CellIdentityLte;
 import android.telephony.CellIdentityWcdma;
 import android.telephony.CellInfo;
+import android.telephony.CellInfoCdma;
 import android.telephony.CellInfoGsm;
 import android.telephony.CellInfoLte;
 import android.telephony.CellInfoWcdma;
 import android.telephony.CellLocation;
-import android.telephony.NeighboringCellInfo;
+import android.telephony.CellSignalStrengthCdma;
+import android.telephony.CellSignalStrengthGsm;
+import android.telephony.CellSignalStrengthLte;
+import android.telephony.CellSignalStrengthWcdma;
 import android.telephony.TelephonyManager;
+import android.telephony.cdma.CdmaCellLocation;
 import android.telephony.gsm.GsmCellLocation;
 import android.util.Log;
 
 import com.mirrordust.telecomlocate.entity.BaseStation;
+import com.mirrordust.telecomlocate.entity.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,83 +63,98 @@ public class BaseStationManager {
         BaseStation baseStation = null;
         Log.v(TAG, cellInfo.toString());
         Log.v(TAG, "" + Integer.MAX_VALUE);
+        int mcc, mnc;
+        mcc = Integer.valueOf(mTelephonyManager.getNetworkOperator().substring(0, 3));
+        mnc = Integer.valueOf(mTelephonyManager.getNetworkOperator().substring(3, 5));
 
         if (cellInfo instanceof CellInfoWcdma) {
             CellInfoWcdma cellInfoWcdma = (CellInfoWcdma) cellInfo;
             CellIdentityWcdma cellIdentityWcdma = cellInfoWcdma.getCellIdentity();
-            baseStation = new BaseStation();
-            baseStation.setType("WCDMA");
-            baseStation.setCid(cellIdentityWcdma.getCid());
-            baseStation.setLac(cellIdentityWcdma.getLac());
-            baseStation.setMcc(cellIdentityWcdma.getMcc());
-            baseStation.setMnc(cellIdentityWcdma.getMnc());
-            baseStation.setBsic_psc_pci(cellIdentityWcdma.getPsc());
-            if (cellInfoWcdma.getCellSignalStrength() != null) {
-                baseStation.setAsuLevel(cellInfoWcdma.getCellSignalStrength().getAsuLevel()); //Get the signal level as an asu value between 0..31, 99 is unknown Asu is calculated based on 3GPP RSRP.
-                baseStation.setSignalLevel(cellInfoWcdma.getCellSignalStrength().getLevel()); //Get signal level as an int from 0..4
-                baseStation.setDbm(cellInfoWcdma.getCellSignalStrength().getDbm()); //Get the signal strength as dBm
+            CellSignalStrengthWcdma cellSignalStrengthWcdma = cellInfoWcdma.getCellSignalStrength();
+            if (null != cellSignalStrengthWcdma) {
+                baseStation = new BaseStation().newInstance(mcc, mnc, cellIdentityWcdma.getLac(), cellIdentityWcdma.getCid(),
+                        0, cellIdentityWcdma.getPsc(), 0, 0,
+                        cellSignalStrengthWcdma.getAsuLevel(), cellSignalStrengthWcdma.getLevel(), cellSignalStrengthWcdma.getDbm(),
+                        Constants.BaseStationType.WCDMA.getValue()
+                        );
+            } else {
+                baseStation = new BaseStation().newInstance(mcc, mnc, cellIdentityWcdma.getLac(), cellIdentityWcdma.getCid(),
+                        0, cellIdentityWcdma.getPsc(), 0, 0,
+                        Constants.BaseStationType.WCDMA.getValue());
             }
         } else if (cellInfo instanceof CellInfoLte) {
             CellInfoLte cellInfoLte = (CellInfoLte) cellInfo;
             CellIdentityLte cellIdentityLte = cellInfoLte.getCellIdentity();
-            baseStation = new BaseStation();
-            baseStation.setType("LTE");
-            baseStation.setCid(cellIdentityLte.getCi());
-            baseStation.setMnc(cellIdentityLte.getMnc());
-            baseStation.setMcc(cellIdentityLte.getMcc());
-            baseStation.setLac(cellIdentityLte.getTac());
-            baseStation.setBsic_psc_pci(cellIdentityLte.getPci());
-            if (cellInfoLte.getCellSignalStrength() != null) {
-                baseStation.setAsuLevel(cellInfoLte.getCellSignalStrength().getAsuLevel());
-                baseStation.setSignalLevel(cellInfoLte.getCellSignalStrength().getLevel());
-                baseStation.setDbm(cellInfoLte.getCellSignalStrength().getDbm());
+            CellSignalStrengthLte cellSignalStrengthLte = cellInfoLte.getCellSignalStrength();
+            if (cellSignalStrengthLte != null) {
+                baseStation = new BaseStation().newInstance(cellIdentityLte.getMcc(), cellIdentityLte.getMnc(), cellIdentityLte.getTac(), cellIdentityLte.getCi(),
+                        0, cellIdentityLte.getPci(), 0, 0,
+                        cellSignalStrengthLte.getAsuLevel(), cellSignalStrengthLte.getLevel(), cellSignalStrengthLte.getDbm(),
+                        Constants.BaseStationType.LTE.getValue());
+            } else {
+                baseStation = new BaseStation().newInstance(cellIdentityLte.getMcc(), cellIdentityLte.getMnc(), cellIdentityLte.getTac(), cellIdentityLte.getCi(),
+                        0, cellIdentityLte.getPci(), 0, 0,
+                        Constants.BaseStationType.LTE.getValue());
             }
         } else if (cellInfo instanceof CellInfoGsm) {
             CellInfoGsm cellInfoGsm = (CellInfoGsm) cellInfo;
             CellIdentityGsm cellIdentityGsm = cellInfoGsm.getCellIdentity();
-            baseStation = new BaseStation();
-            baseStation.setType("GSM");
-            baseStation.setCid(cellIdentityGsm.getCid());
-            baseStation.setLac(cellIdentityGsm.getLac());
-            baseStation.setMcc(cellIdentityGsm.getMcc());
-            baseStation.setMnc(cellIdentityGsm.getMnc());
-            baseStation.setBsic_psc_pci(cellIdentityGsm.getPsc());
-            if (cellInfoGsm.getCellSignalStrength() != null) {
-                baseStation.setAsuLevel(cellInfoGsm.getCellSignalStrength().getAsuLevel());
-                baseStation.setSignalLevel(cellInfoGsm.getCellSignalStrength().getLevel());
-                baseStation.setDbm(cellInfoGsm.getCellSignalStrength().getDbm());
+            CellSignalStrengthGsm cellSignalStrengthGsm = cellInfoGsm.getCellSignalStrength();
+            if (cellSignalStrengthGsm != null) {
+                baseStation = new BaseStation().newInstance(mcc, mnc, cellIdentityGsm.getLac(), cellIdentityGsm.getCid(),
+                        0, cellIdentityGsm.getPsc(), 0, 0,
+                        cellSignalStrengthGsm.getAsuLevel(), cellSignalStrengthGsm.getLevel(), cellSignalStrengthGsm.getDbm(),
+                        Constants.BaseStationType.GSM.getValue());
+            } else {
+                baseStation = new BaseStation().newInstance(mcc, mnc, cellIdentityGsm.getLac(), cellIdentityGsm.getCid(),
+                        0, cellIdentityGsm.getPsc(), 0, 0,
+                        Constants.BaseStationType.GSM.getValue());
             }
-        } else {
-            Log.e(TAG, "CDMA CellInfo................................................");
+        } else if (cellInfo instanceof CellInfoCdma) {
+            CellInfoCdma cellInfoCdma = (CellInfoCdma) cellInfo;
+            CellIdentityCdma cellIdentityCdma = cellInfoCdma.getCellIdentity();
+            CellSignalStrengthCdma cellSignalStrengthCdma = cellInfoCdma.getCellSignalStrength();
+            if (null == cellSignalStrengthCdma) {
+                baseStation = new BaseStation().newInstance(mcc, mnc, cellIdentityCdma.getNetworkId(), cellIdentityCdma.getBasestationId(),
+                        0, cellIdentityCdma.getBasestationId(), cellIdentityCdma.getLongitude(), cellIdentityCdma.getLatitude(),
+                        Constants.BaseStationType.CDMA.getValue());
+            } else {
+                baseStation = new BaseStation().newInstance(mcc, mnc, cellIdentityCdma.getNetworkId(), cellIdentityCdma.getBasestationId(),
+                        0, cellIdentityCdma.getBasestationId(), cellIdentityCdma.getLongitude(), cellIdentityCdma.getLatitude(),
+                        cellSignalStrengthCdma.getAsuLevel(), cellSignalStrengthCdma.getCdmaLevel(), cellSignalStrengthCdma.getCdmaDbm(),
+                        Constants.BaseStationType.CDMA.getValue());
+            }
         }
         return baseStation;
     }
 
     public BaseStation getConnectedTower() {
-        String operator = mTelephonyManager.getNetworkOperator();
         int mcc, mnc;
-        try {
-            mcc = Integer.parseInt(operator.substring(0, 3));
-        } catch (Exception e) {
-            mcc = -2;
-        }
-        try {
-            mnc = Integer.parseInt(operator.substring(3));
-        } catch (Exception e) {
-            mnc = -2;
-        }
-        CellLocation cellLocation = mTelephonyManager.getCellLocation();
+        mcc = Integer.valueOf(mTelephonyManager.getNetworkOperator().substring(0, 3));
+        mnc = Integer.valueOf(mTelephonyManager.getNetworkOperator().substring(3, 5));
         BaseStation tower = new BaseStation();
         tower.setMcc(mcc);
         tower.setMnc(mnc);
-
-        if (cellLocation instanceof GsmCellLocation) {
-            tower.setBsic_psc_pci(((GsmCellLocation) cellLocation).getPsc());
-            tower.setCid(((GsmCellLocation) cellLocation).getCid());
-            tower.setLac(((GsmCellLocation) cellLocation).getLac());
-            tower.setType("");
-            Log.v(TAG, "Get connected tower GSM");
+        try {
+            CellLocation cellLocation = mTelephonyManager.getCellLocation();
+            if (cellLocation instanceof GsmCellLocation) {
+                GsmCellLocation gsmCellLocation = (GsmCellLocation) cellLocation;
+                tower.setBsic_psc_pci(gsmCellLocation.getPsc());
+                tower.setCid(gsmCellLocation.getCid());
+                tower.setLac(gsmCellLocation.getLac());
+                tower.setType(Constants.BaseStationType.GSM.getValue());
+            } else if (cellLocation instanceof CdmaCellLocation){
+                CdmaCellLocation cdmaCellLocation = (CdmaCellLocation) cellLocation;
+                tower.setCid(cdmaCellLocation.getBaseStationId());
+                tower.setLac(cdmaCellLocation.getNetworkId());
+                tower.setBsic_psc_pci(0);
+                tower.setType(Constants.BaseStationType.CDMA.getValue());
+            } else {
+            }
+            Log.v(TAG, "Get connected tower" + tower.getType());
             Log.v(TAG, cellLocation.toString());
+        } catch (SecurityException e) {
+            Log.e(TAG, "No permission Manifest.permission.ACCESS_COARSE_LOCATION");
         }
         return tower;
     }
@@ -144,30 +166,21 @@ public class BaseStationManager {
      *
      * @return List of BaseStation, BaseStation is a class contains cell info
      */
-    public List<BaseStation> getTowerList() {
+    public List<BaseStation> getTowerList() throws SecurityException{
         List<BaseStation> cellularTowerList = new ArrayList<>();
 
-        // Firstly try getAllCellInfo() api
+        /* Use {@link #getAllCellInfo} which returns a superset of the information
+         * from NeighboringCellInfo.
+         */
         List<CellInfo> cellInfoList = null;
         cellInfoList = mTelephonyManager.getAllCellInfo();
-        // then the
-        List<NeighboringCellInfo> neighboringCellInfoList = null;
-        neighboringCellInfoList = mTelephonyManager.getNeighboringCellInfo();
 
         /*
         * decide which list will be used:
         * flag = 0, use cellInfoList,
-        * flag = 1, use neighboringCellInfoList,
         * flag = -1, use getCellLocation.
         * */
-        int flag = 0;
-        if (cellInfoList == null && neighboringCellInfoList == null) {
-            flag = -1;
-        } else if (cellInfoList == null) {
-            flag = 1;
-        } else {
-            flag = 0;
-        }
+        int flag = null == cellInfoList ? -1 : 0;
 
         Log.v(TAG, "flag = " + flag);
 
@@ -179,39 +192,6 @@ public class BaseStationManager {
                     if (cellularTower != null) {
                         cellularTowerList.add(cellularTower);
                     }
-                }
-                return cellularTowerList;
-            }
-            case 1: {
-                for (int i = 0; i < neighboringCellInfoList.size(); i++) {
-                    final NeighboringCellInfo ninfo = neighboringCellInfoList.get(i);
-                    final BaseStation cellularTower = new BaseStation();
-                    if (ninfo.getNetworkType() == TelephonyManager.NETWORK_TYPE_GPRS ||
-                            ninfo.getNetworkType() == TelephonyManager.NETWORK_TYPE_EDGE) {
-                        cellularTower.setType("GSM");
-                    } else {
-                        cellularTower.setType("");
-                    }
-                    String operator = mTelephonyManager.getNetworkOperator();
-                    int mcc, mnc;
-                    try {
-                        mcc = Integer.parseInt(operator.substring(0, 3));
-                    } catch (Exception e) {
-                        mcc = -2;
-                    }
-                    try {
-                        mnc = Integer.parseInt(operator.substring(3));
-                    } catch (Exception e) {
-                        mnc = -2;
-                    }
-                    cellularTower.setMcc(mcc);
-                    cellularTower.setMnc(mnc);
-                    cellularTower.setLac(ninfo.getLac());
-                    cellularTower.setCid(ninfo.getCid());
-                    cellularTower.setBsic_psc_pci(ninfo.getPsc());
-                    cellularTower.setAsuLevel(ninfo.getRssi());
-                    cellularTower.setDbm(-113 + 2 * ninfo.getRssi());
-                    cellularTowerList.add(cellularTower);
                 }
                 return cellularTowerList;
             }
