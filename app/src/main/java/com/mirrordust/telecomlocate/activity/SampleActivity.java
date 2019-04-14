@@ -372,7 +372,7 @@ public class SampleActivity extends AppCompatActivity
         final EditText customMode = (EditText) controlPanelView.findViewById(R.id.mode_custom);
 
         builder.setView(controlPanelView)
-                .setPositiveButton("Record", new DialogInterface.OnClickListener() {
+                .setPositiveButton("Record1", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if (isPermissionGranted()) {

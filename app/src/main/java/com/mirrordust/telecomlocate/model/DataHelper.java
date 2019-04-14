@@ -1,12 +1,15 @@
 package com.mirrordust.telecomlocate.model;
 
-import android.provider.Settings;
+import android.arch.lifecycle.MutableLiveData;
 import android.util.Log;
 
-import com.mirrordust.telecomlocate.entity.BaseStation;
+import com.mapbox.geojson.Point;
 import com.mirrordust.telecomlocate.entity.DataSet;
 import com.mirrordust.telecomlocate.entity.Sample;
 import com.mirrordust.telecomlocate.interf.OnAddOrUpdateSampleListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -241,5 +244,15 @@ public class DataHelper {
         return sample.getLatLng().isEmpty();
     }
 
+    public static MutableLiveData<List<Point>> getPointsWithIndex(Realm realm, long index) {
+        MutableLiveData<List<Point>> pointLiveData = new MutableLiveData<>();
+        List<Point> result = new ArrayList<>();
+        final RealmResults<Sample> samples = getSamplesByIndex(realm, index);
+        for (Sample sample : samples) {
+            result.add(Point.fromLngLat(sample.getLatLng().getLongitude(), sample.getLatLng().getLatitude(), sample.getLatLng().getAltitude()));
+        }
+        pointLiveData.setValue(result);
+        return pointLiveData;
+    }
 
 }

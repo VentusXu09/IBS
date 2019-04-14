@@ -2,20 +2,28 @@ package com.mirrordust.telecomlocate.activity;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.support.v4.app.FragmentActivity;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.mirrordust.telecomlocate.R;
+import com.mirrordust.telecomlocate.fragment.GalleryFragment;
+import com.mirrordust.telecomlocate.gui.BaseActivity;
+import com.mirrordust.telecomlocate.gui.BaseFragment;
 import com.mirrordust.telecomlocate.viewmodel.GalleryViewModel;
 import com.mirrordust.telecomlocate.viewmodel.ViewModelFactory;
 
-public class GalleryActivity extends AppCompatActivity {
+import static com.mirrordust.telecomlocate.util.Constants.SAMPLE_INDEX;
+
+/**
+ * Created by ventus0905 on 04/12/2019
+ */
+public class GalleryActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         GalleryViewModel galleryViewModel = obtainViewModel(this);
-        galleryViewModel.init();
+        long index = getIntent().getLongExtra(SAMPLE_INDEX, 0);
+        galleryViewModel.init(index);
         setContentView(R.layout.activity_gallery);
     }
 
@@ -24,5 +32,9 @@ public class GalleryActivity extends AppCompatActivity {
         return ViewModelProviders.of(activity, factory).get(GalleryViewModel.class);
     }
 
+    @Override
+    public BaseFragment getInitialFragment() {
+        return GalleryFragment.newInstance();
+    }
 
 }
