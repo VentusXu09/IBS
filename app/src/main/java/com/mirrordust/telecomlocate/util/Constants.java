@@ -1,4 +1,4 @@
-package com.mirrordust.telecomlocate.entity;
+package com.mirrordust.telecomlocate.util;
 
 import com.mirrordust.telecomlocate.util.TextUtils;
 
@@ -8,6 +8,7 @@ import com.mirrordust.telecomlocate.util.TextUtils;
 
 public class Constants {
     public static String LINE_SOURCE = "line source";
+    public static boolean FAKE_API = true;
 
     public enum BaseStationType {
         GSM("GSM"), CDMA("CDMA"), LTE("LTE"), WCDMA("WCDMA");

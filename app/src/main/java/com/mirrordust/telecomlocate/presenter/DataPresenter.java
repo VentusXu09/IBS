@@ -10,6 +10,7 @@ import com.google.gson.Gson;
 import com.mirrordust.telecomlocate.entity.Barometric;
 import com.mirrordust.telecomlocate.entity.BaseStation;
 import com.mirrordust.telecomlocate.entity.Battery;
+import com.mirrordust.telecomlocate.util.Constants;
 import com.mirrordust.telecomlocate.entity.DataSet;
 import com.mirrordust.telecomlocate.entity.Device;
 import com.mirrordust.telecomlocate.entity.Geomagnetism;
@@ -73,6 +74,10 @@ public class DataPresenter implements DataContract.Presenter {
 
                 @Override
                 public void onCompleted(Context context, UploadInfo uploadInfo, ServerResponse serverResponse) {
+                    if (Constants.FAKE_API) {
+                        changeDataSetUploadStatus(currentUploadedIndex, true);
+                        return;
+                    }
                     if (serverResponse != null) {
                         UploadResponse response = new Gson()
                                 .fromJson(serverResponse.getBodyAsString(), UploadResponse.class);

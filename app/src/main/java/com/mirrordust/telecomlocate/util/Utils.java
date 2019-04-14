@@ -1,9 +1,5 @@
 package com.mirrordust.telecomlocate.util;
 
-import android.util.Log;
-
-import com.mirrordust.telecomlocate.entity.BaseStation;
-import com.mirrordust.telecomlocate.entity.Constants;
 import com.mirrordust.telecomlocate.entity.LatLng;
 
 import java.lang.reflect.Field;

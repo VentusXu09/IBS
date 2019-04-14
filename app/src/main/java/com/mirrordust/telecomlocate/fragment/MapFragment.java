@@ -91,9 +91,10 @@ public class MapFragment extends Fragment {
         mMapView.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady(MapboxMap mapboxMap) {
-                mapboxMap.setStyle(Style.OUTDOORS, new Style.OnStyleLoaded() {
+                mapboxMap.setStyle(Style.MAPBOX_STREETS, new Style.OnStyleLoaded() {
                     @Override
                     public void onStyleLoaded(@NonNull Style style) {
+                        //mapbox:mapbox_styleUrl="mapbox://styles/mapbox/streets-v10"
                         //init route points
                         List<Point> routeCoordinates = new ArrayList<>();
 

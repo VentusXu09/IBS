@@ -21,7 +21,7 @@ import android.telephony.gsm.GsmCellLocation;
 import android.util.Log;
 
 import com.mirrordust.telecomlocate.entity.BaseStation;
-import com.mirrordust.telecomlocate.entity.Constants;
+import com.mirrordust.telecomlocate.util.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
