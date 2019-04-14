@@ -1,6 +1,7 @@
 package com.mirrordust.telecomlocate.model;
 
 import android.content.Context;
+import android.os.Build;
 import android.telephony.CellIdentityCdma;
 import android.telephony.CellIdentityGsm;
 import android.telephony.CellIdentityLte;
@@ -73,13 +74,13 @@ public class BaseStationManager {
             CellSignalStrengthWcdma cellSignalStrengthWcdma = cellInfoWcdma.getCellSignalStrength();
             if (null != cellSignalStrengthWcdma) {
                 baseStation = new BaseStation().newInstance(mcc, mnc, cellIdentityWcdma.getLac(), cellIdentityWcdma.getCid(),
-                        0, cellIdentityWcdma.getPsc(), 0, 0,
+                        getArfcn(cellIdentityWcdma), cellIdentityWcdma.getPsc(), 0, 0,
                         cellSignalStrengthWcdma.getAsuLevel(), cellSignalStrengthWcdma.getLevel(), cellSignalStrengthWcdma.getDbm(),
                         Constants.BaseStationType.WCDMA.getValue()
                         );
             } else {
                 baseStation = new BaseStation().newInstance(mcc, mnc, cellIdentityWcdma.getLac(), cellIdentityWcdma.getCid(),
-                        0, cellIdentityWcdma.getPsc(), 0, 0,
+                        getArfcn(cellIdentityWcdma), cellIdentityWcdma.getPsc(), 0, 0,
                         Constants.BaseStationType.WCDMA.getValue());
             }
         } else if (cellInfo instanceof CellInfoLte) {
@@ -88,12 +89,12 @@ public class BaseStationManager {
             CellSignalStrengthLte cellSignalStrengthLte = cellInfoLte.getCellSignalStrength();
             if (cellSignalStrengthLte != null) {
                 baseStation = new BaseStation().newInstance(cellIdentityLte.getMcc(), cellIdentityLte.getMnc(), cellIdentityLte.getTac(), cellIdentityLte.getCi(),
-                        0, cellIdentityLte.getPci(), 0, 0,
+                        getArfcn(cellIdentityLte), cellIdentityLte.getPci(), 0, 0,
                         cellSignalStrengthLte.getAsuLevel(), cellSignalStrengthLte.getLevel(), cellSignalStrengthLte.getDbm(),
                         Constants.BaseStationType.LTE.getValue());
             } else {
                 baseStation = new BaseStation().newInstance(cellIdentityLte.getMcc(), cellIdentityLte.getMnc(), cellIdentityLte.getTac(), cellIdentityLte.getCi(),
-                        0, cellIdentityLte.getPci(), 0, 0,
+                        getArfcn(cellIdentityLte), cellIdentityLte.getPci(), 0, 0,
                         Constants.BaseStationType.LTE.getValue());
             }
         } else if (cellInfo instanceof CellInfoGsm) {
@@ -102,12 +103,12 @@ public class BaseStationManager {
             CellSignalStrengthGsm cellSignalStrengthGsm = cellInfoGsm.getCellSignalStrength();
             if (cellSignalStrengthGsm != null) {
                 baseStation = new BaseStation().newInstance(mcc, mnc, cellIdentityGsm.getLac(), cellIdentityGsm.getCid(),
-                        0, cellIdentityGsm.getPsc(), 0, 0,
+                        getArfcn(cellIdentityGsm), cellIdentityGsm.getPsc(), 0, 0,
                         cellSignalStrengthGsm.getAsuLevel(), cellSignalStrengthGsm.getLevel(), cellSignalStrengthGsm.getDbm(),
                         Constants.BaseStationType.GSM.getValue());
             } else {
                 baseStation = new BaseStation().newInstance(mcc, mnc, cellIdentityGsm.getLac(), cellIdentityGsm.getCid(),
-                        0, cellIdentityGsm.getPsc(), 0, 0,
+                        getArfcn(cellIdentityGsm), cellIdentityGsm.getPsc(), 0, 0,
                         Constants.BaseStationType.GSM.getValue());
             }
         } else if (cellInfo instanceof CellInfoCdma) {
@@ -116,11 +117,11 @@ public class BaseStationManager {
             CellSignalStrengthCdma cellSignalStrengthCdma = cellInfoCdma.getCellSignalStrength();
             if (null == cellSignalStrengthCdma) {
                 baseStation = new BaseStation().newInstance(mcc, mnc, cellIdentityCdma.getNetworkId(), cellIdentityCdma.getBasestationId(),
-                        0, cellIdentityCdma.getBasestationId(), cellIdentityCdma.getLongitude(), cellIdentityCdma.getLatitude(),
+                        cellIdentityCdma.getNetworkId(), cellIdentityCdma.getBasestationId(), cellIdentityCdma.getLongitude(), cellIdentityCdma.getLatitude(),
                         Constants.BaseStationType.CDMA.getValue());
             } else {
                 baseStation = new BaseStation().newInstance(mcc, mnc, cellIdentityCdma.getNetworkId(), cellIdentityCdma.getBasestationId(),
-                        0, cellIdentityCdma.getBasestationId(), cellIdentityCdma.getLongitude(), cellIdentityCdma.getLatitude(),
+                        cellIdentityCdma.getNetworkId(), cellIdentityCdma.getBasestationId(), cellIdentityCdma.getLongitude(), cellIdentityCdma.getLatitude(),
                         cellSignalStrengthCdma.getAsuLevel(), cellSignalStrengthCdma.getCdmaLevel(), cellSignalStrengthCdma.getCdmaDbm(),
                         Constants.BaseStationType.CDMA.getValue());
             }
@@ -310,5 +311,22 @@ public class BaseStationManager {
                 });
             }
         });
+    }
+
+    private int getArfcn(Object cellIdentity) {
+        int arfcn = 0;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            if (cellIdentity instanceof CellIdentityWcdma) {
+                CellIdentityWcdma cellIdentityCdma = (CellIdentityWcdma) cellIdentity;
+                arfcn = cellIdentityCdma.getUarfcn();
+            } else if (cellIdentity instanceof CellIdentityGsm) {
+                CellIdentityGsm cellIdentityGsm = (CellIdentityGsm) cellIdentity;
+                arfcn = cellIdentityGsm.getArfcn();
+            } else if (cellIdentity instanceof CellIdentityLte) {
+                CellIdentityLte cellIdentityLte = (CellIdentityLte) cellIdentity;
+                arfcn = cellIdentityLte.getEarfcn();
+            }
+        }
+        return arfcn;
     }
 }
