@@ -1,7 +1,5 @@
 package com.mirrordust.telecomlocate.util;
 
-import com.mirrordust.telecomlocate.util.TextUtils;
-
 /**
  * Created by ventus0905 on 04/01/2019
  */
@@ -28,7 +26,7 @@ public class Constants {
 
         public static BaseStationType map(String value) {
             BaseStationType type = null;
-            if (TextUtils.isEmpty(value)) {
+            if (StringUtils.isEmpty(value)) {
                 //Do nothing
             } else if (value.equalsIgnoreCase(GSM.value)) {
                 type = GSM;

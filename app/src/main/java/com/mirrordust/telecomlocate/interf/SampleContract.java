@@ -39,6 +39,8 @@ public interface SampleContract {
 
         void startSampling(String mode, Context context);
 
+        void startSampling(String mode, int floor, Context context);
+
         void stopSampling();
 
         void saveNewData(String dataSetName);

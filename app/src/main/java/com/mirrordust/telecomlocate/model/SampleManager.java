@@ -69,13 +69,13 @@ public class SampleManager {
                         } else {
                             record.setLatLng(LatLng.createEmptyLatLng());
                         }
-                        if (cellularTowers != null) {
-                            RealmList<BaseStation> cellularTowerRealmList = new RealmList<>();
+                        RealmList<BaseStation> cellularTowerRealmList = new RealmList<>();
+                        if (cellularTowers != null && cellularTowers.size() > 0) {
                             for (BaseStation tower : cellularTowers) {
                                 cellularTowerRealmList.add(tower);
                             }
-                            record.setBSList(cellularTowerRealmList);
                         }
+                        record.setBSList(cellularTowerRealmList);
                         record.setBtry(battery);
                         record.setSignal(signalRecord);
                         record.setMBS();

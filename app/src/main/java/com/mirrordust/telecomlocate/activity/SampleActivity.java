@@ -39,6 +39,7 @@ import com.mirrordust.telecomlocate.R;
 import com.mirrordust.telecomlocate.adapter.SampleAdapter;
 import com.mirrordust.telecomlocate.interf.SampleContract;
 import com.mirrordust.telecomlocate.presenter.SamplePresenter;
+import com.mirrordust.telecomlocate.util.StringUtils;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
@@ -370,9 +371,10 @@ public class SampleActivity extends AppCompatActivity
         final View controlPanelView = inflater.inflate(R.layout.controlpanel, null);
         final RadioGroup radioGroup = (RadioGroup) controlPanelView.findViewById(R.id.motion_modes);
         final EditText customMode = (EditText) controlPanelView.findViewById(R.id.mode_custom);
+        final EditText floorNumberInput = (EditText) controlPanelView.findViewById(R.id.floor_number_input);
 
         builder.setView(controlPanelView)
-                .setPositiveButton("Record1", new DialogInterface.OnClickListener() {
+                .setPositiveButton("Record", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if (isPermissionGranted()) {
@@ -393,7 +395,12 @@ public class SampleActivity extends AppCompatActivity
                                 }
                             }
 
-                            mPresenter.startSampling(theMode, getApplicationContext());
+                            String floorNumberText = String.valueOf(floorNumberInput.getText());
+                            if (StringUtils.isEmpty(floorNumberText)) {
+                                mPresenter.startSampling(theMode,  getApplicationContext());
+                            } else {
+                                mPresenter.startSampling(theMode, Integer.valueOf(floorNumberText), getApplicationContext());
+                            }
                         } else {
                             requestPermissions();
                         }

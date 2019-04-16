@@ -86,6 +86,7 @@ public class DetailFragment extends Fragment {
         detailItems.add(new DetailItem("accuracy", Float.toString(sample.getLatLng().getAccuracy())));
         detailItems.add(new DetailItem("speed", Float.toString(sample.getLatLng().getSpeed())));
         detailItems.add(new DetailItem("mode", sample.getMode()));
+        detailItems.add(new DetailItem("floor", String.valueOf(sample.getFloor())));
         //BS list
         detailItems.add(new DetailItem("", ""));
         detailItems.add(new DetailItem("[ BS list ]", ""));
@@ -147,6 +148,12 @@ public class DetailFragment extends Fragment {
         detailItems.add(new DetailItem("", ""));
         detailItems.add(new DetailItem("[ Barometric ]", ""));
         detailItems.add(new DetailItem("pressure", Double.toString(sample.getBaro().getPressure())));
+        //extra label
+        detailItems.add(new DetailItem("", ""));
+        detailItems.add(new DetailItem("[Extra Labels]", ""));
+        detailItems.add(new DetailItem("extra label 1", "Value1"));
+        detailItems.add(new DetailItem("extra label 2", "Value2"));
+        detailItems.add(new DetailItem("extra label 3", "Value3"));
         return detailItems;
     }
 }

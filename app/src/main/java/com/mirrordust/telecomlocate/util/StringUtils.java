@@ -87,8 +87,6 @@ public class StringUtils {
     }
 
     public static String upperCaseFirstLetters(String str) {
-        //TODO unit test
-        //TODO check for duplication in TOTeamAbsences
         boolean prevWasWhiteSp = true;
         char[] chars = str.toCharArray();
         for (int i = 0; i < chars.length; i++) {

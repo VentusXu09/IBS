@@ -32,6 +32,7 @@ public class SampleService extends Service {
 
     private final IBinder mBinder = new LocalBinder();
     private String mode;
+    private int floor;
     private SampleManager mSampleManager;
     private SamplePresenter mPresenter;
     private Handler mHandler = new Handler();
@@ -60,6 +61,7 @@ public class SampleService extends Service {
             public void call(Sample sample) {
                 sample.setIndex(0);
                 sample.setMode(mode);
+                sample.setFloor(floor);
                 mPresenter.addOrUpdateSample(sample);
             }
         });
@@ -97,6 +99,14 @@ public class SampleService extends Service {
         this.mode = mode;
     }
 
+    public int getFloor() {
+        return floor;
+    }
+
+    public void setFloor(int floor) {
+        this.floor = floor;
+    }
+
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -107,7 +117,8 @@ public class SampleService extends Service {
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             //Create a NotificationChannel first
-            NotificationChannel chan = new NotificationChannel(NOTIFICATION_CHANNEL_ID, NOTIFICATION_CHANNEL_NAME, NotificationManager.IMPORTANCE_NONE);
+            NotificationChannel chan =
+                    new NotificationChannel(NOTIFICATION_CHANNEL_ID, NOTIFICATION_CHANNEL_NAME, NotificationManager.IMPORTANCE_NONE);
             chan.setLightColor(Color.BLUE);
             chan.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
             chan.setImportance(NotificationManager.IMPORTANCE_HIGH);

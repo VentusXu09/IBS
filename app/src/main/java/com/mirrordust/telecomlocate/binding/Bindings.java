@@ -44,21 +44,27 @@ public class Bindings {
                         List<Point> routeCoordinates = new ArrayList<>();
                         routeCoordinates.addAll(pointList);
 
-                        style.removeSource("line-source");
-                        style.removeLayer("linelayer");
+                        GeoJsonSource source = (GeoJsonSource) style.getSource("line-source");
+                        if (null != source) {
+                            source.setGeoJson(FeatureCollection.fromFeatures(new Feature[]{Feature.fromGeometry(
+                                    LineString.fromLngLats(routeCoordinates))}));
 
-                        style.addSource(new GeoJsonSource("line-source",
-                                FeatureCollection.fromFeatures(new Feature[] {Feature.fromGeometry(
-                                        LineString.fromLngLats(routeCoordinates)
-                                )})));
+                        } else {
 
-                        style.addLayer(new LineLayer("linelayer", "line-source").withProperties(
-                                PropertyFactory.lineDasharray(new Float[] {0.01f, 2f}),
-                                PropertyFactory.lineCap(Property.LINE_CAP_ROUND),
-                                PropertyFactory.lineJoin(Property.LINE_JOIN_ROUND),
-                                PropertyFactory.lineWidth(5f),
-                                PropertyFactory.lineColor(Color.parseColor("#e55e5e"))
-                        ));
+                            style.addSource(new GeoJsonSource("line-source",
+                                    FeatureCollection.fromFeatures(new Feature[]{Feature.fromGeometry(
+                                            LineString.fromLngLats(routeCoordinates)
+                                    )})));
+                            style.addLayer(new LineLayer("linelayer", "line-source").withProperties(
+                                    PropertyFactory.lineDasharray(new Float[] {0.01f, 2f}),
+                                    PropertyFactory.lineCap(Property.LINE_CAP_ROUND),
+                                    PropertyFactory.lineJoin(Property.LINE_JOIN_ROUND),
+                                    PropertyFactory.lineWidth(5f),
+                                    PropertyFactory.lineColor(Color.parseColor("#e55e5e"))
+                            ));
+                        }
+
+
                     }
                 });
                 if (pointList.size() == 0) return;

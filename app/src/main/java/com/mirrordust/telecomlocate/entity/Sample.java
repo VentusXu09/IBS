@@ -27,6 +27,9 @@ public class Sample extends RealmObject {
     // motion modes
     private String mode;
 
+    //floor number start from 1
+    private int floor;
+
     /* Measurements */
 
     private RealmList<BaseStation> BSList;  // base stations list, get from #getAllCellInfo()
@@ -88,6 +91,14 @@ public class Sample extends RealmObject {
         this.mode = mode;
     }
 
+    public void setFloor(int floor) {
+        this.floor = floor;
+    }
+
+    public int getFloor() {
+        return floor;
+    }
+
     public RealmList<BaseStation> getBSList() {
         return BSList;
     }
@@ -101,7 +112,11 @@ public class Sample extends RealmObject {
     }
 
     public void setMBS() {
-        this.MBS = null == BSList.first() ? new BaseStation().emptyInstance() : BSList.first();
+        if (null == BSList || BSList.size() == 0) {
+            this.MBS = new BaseStation().emptyInstance();
+            return;
+        }
+        this.MBS = BSList.first();
     }
 
     public Signal getSignal() {

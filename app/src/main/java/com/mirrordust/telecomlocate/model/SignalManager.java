@@ -51,27 +51,40 @@ public class SignalManager extends PhoneStateListener implements PermissionHelpe
 
         Log.v(TAG, ssignal);
 
-        CellInfo connectedCell = mTelephonyManager.getAllCellInfo().get(0);
-
         int dB = -120;
-        if (connectedCell instanceof CellInfoLte) {
-            // For Lte SignalStrength: dbm = ASU - 140.
-            dB = Integer.parseInt(parts[8]) - 140;
-            /*int ltesignal = Integer.parseInt(parts[9]);
-            if (ltesignal < -2) {
-                dB = ltesignal;
-            }*/
-        } else if (connectedCell instanceof CellInfoGsm) {
-            if (signalStrength.getGsmSignalStrength() != 99) {
-                // For GSM Signal Strength: dbm =  (2*ASU)-113.
-                int strengthInteger = -113 + 2 * signalStrength.getGsmSignalStrength();
-                dB = strengthInteger;
-                Log.e(TAG, "getEvdoDbm: " + signalStrength.getEvdoDbm());
-                Log.e(TAG, "getCdmaDbm: " + signalStrength.getCdmaDbm());
+
+        if (null == mTelephonyManager.getAllCellInfo() || mTelephonyManager.getAllCellInfo().size() == 0) {
+            CellLocation cellLocation = mTelephonyManager.getCellLocation();
+            if (cellLocation instanceof GsmCellLocation) {
+                if (signalStrength.getGsmSignalStrength() != 99) {
+                    // For GSM Signal Strength: dbm =  (2*ASU)-113.
+                    int strengthInteger = -113 + 2 * signalStrength.getGsmSignalStrength();
+                    dB = strengthInteger;
+                    Log.e(TAG, "getEvdoDbm: " + signalStrength.getEvdoDbm());
+                    Log.e(TAG, "getCdmaDbm: " + signalStrength.getCdmaDbm());
+                }
+            } else if (cellLocation instanceof CdmaCellLocation) {
+                dB = signalStrength.getCdmaDbm();
             }
-        } else if (connectedCell instanceof CellInfoCdma) {
-            dB = signalStrength.getCdmaDbm();
+        } else {
+            CellInfo connectedCell = mTelephonyManager.getAllCellInfo().get(0);
+
+            if (connectedCell instanceof CellInfoLte) {
+                // For Lte SignalStrength: dbm = ASU - 140.
+                dB = Integer.parseInt(parts[8]) - 140;
+            } else if (connectedCell instanceof CellInfoGsm) {
+                if (signalStrength.getGsmSignalStrength() != 99) {
+                    // For GSM Signal Strength: dbm =  (2*ASU)-113.
+                    int strengthInteger = -113 + 2 * signalStrength.getGsmSignalStrength();
+                    dB = strengthInteger;
+                    Log.e(TAG, "getEvdoDbm: " + signalStrength.getEvdoDbm());
+                    Log.e(TAG, "getCdmaDbm: " + signalStrength.getCdmaDbm());
+                }
+            } else if (connectedCell instanceof CellInfoCdma) {
+                dB = signalStrength.getCdmaDbm();
+            }
         }
+
         Log.e(TAG, "dB: " + dB);
 
         Signal signalRecord = new Signal();

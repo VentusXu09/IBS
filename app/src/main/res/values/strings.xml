@@ -82,6 +82,7 @@
     <string name="mode_car">Car</string>
     <string name="mode_other">Other</string>
     <string name="mode_hint">Select or type to Start</string>
+    <string name="floor_number">Input floor number</string>
 
     <string-array name="travel_mode">
         <item>Walk</item>
@@ -93,9 +94,5 @@
         <item>Subway</item>
         <item>Train</item>
     </string-array>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-
 
 </resources>

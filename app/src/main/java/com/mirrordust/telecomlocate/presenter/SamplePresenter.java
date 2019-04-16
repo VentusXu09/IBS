@@ -153,6 +153,11 @@ public class SamplePresenter implements SampleContract.Presenter, OnAddOrUpdateS
 
     @Override
     public void startSampling(String mode, Context context) {
+        startSampling(mode, 1, context);
+    }
+
+    @Override
+    public void startSampling(String mode, int floor, Context context) {
         mMode = mode;
 
         if (!isRecording()) {
@@ -165,12 +170,14 @@ public class SamplePresenter implements SampleContract.Presenter, OnAddOrUpdateS
                 mSampleService.setSamplePresenter(this);
             }
             mSampleService.setMode(mMode);
+            mSampleService.setFloor(floor);
             mSampleService.startCollecting();
             mRecording = true;
             mSampleView.setActivityTitle("Recording...");
             mSampleView.setFabIconSampling(true);
         } else {
             mSampleService.setMode(mMode);
+            mSampleService.setFloor(floor);
         }
     }
 
