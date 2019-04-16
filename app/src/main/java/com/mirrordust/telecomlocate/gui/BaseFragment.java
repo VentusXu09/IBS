@@ -27,8 +27,7 @@ public interface BaseFragment {
      * if nothing set return default
      * HeaderIconType.Hamburger
      */
-    //TODO: Implement HeaderIcon Logic
-//    HeaderIconType getHeaderIconType();
+    HeaderIconType getHeaderIconType();
 
     /**
      * invalidate the fragment
@@ -41,13 +40,13 @@ public interface BaseFragment {
     String getTransactionTag();
 
     /**
-     * @return true to enable scroll with container's scrolling
-     */
-//    boolean shouldSyncScrolling();
-
-    /**
      * @return false to continue normal back press, true to interrupt normal on back press
      */
     boolean onBackPressed();
+
+    /**
+     * @return corresponding header type
+     */
+    HeaderType getHeaderType();
 
 }

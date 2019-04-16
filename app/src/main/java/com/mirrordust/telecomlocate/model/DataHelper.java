@@ -114,6 +114,9 @@ public class DataHelper {
     }
 
     public static long getMaxDataSetIndex(Realm realm) {
+        if (null == realm.where(DataSet.class).max("index")) {
+            return 0;
+        }
         return realm.where(DataSet.class).max("index").longValue();
     }
 
@@ -253,6 +256,13 @@ public class DataHelper {
         }
         pointLiveData.setValue(result);
         return pointLiveData;
+    }
+
+    public static MutableLiveData<String> getDataSetName(Realm realm, long index) {
+        MutableLiveData<String> liveData = new MutableLiveData<>();
+        String name = realm.where(DataSet.class).equalTo("index", index).findFirst().getName();
+        liveData.setValue(name);
+        return liveData;
     }
 
 }

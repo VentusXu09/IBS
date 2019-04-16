@@ -91,27 +91,27 @@ public class MapFragment extends Fragment {
         mMapView.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady(MapboxMap mapboxMap) {
-                mapboxMap.setStyle(Style.MAPBOX_STREETS, new Style.OnStyleLoaded() {
-                    @Override
-                    public void onStyleLoaded(@NonNull Style style) {
-                        //mapbox:mapbox_styleUrl="mapbox://styles/mapbox/streets-v10"
-                        //init route points
-                        List<Point> routeCoordinates = new ArrayList<>();
-
-                        style.addSource(new GeoJsonSource("line-source",
-                                FeatureCollection.fromFeatures(new Feature[] {Feature.fromGeometry(
-                                        LineString.fromLngLats(routeCoordinates)
-                                )})));
-
-                        style.addLayer(new LineLayer("linelayer", "line-source").withProperties(
-                                PropertyFactory.lineDasharray(new Float[] {0.01f, 2f}),
-                                PropertyFactory.lineCap(Property.LINE_CAP_ROUND),
-                                PropertyFactory.lineJoin(Property.LINE_JOIN_ROUND),
-                                PropertyFactory.lineWidth(5f),
-                                PropertyFactory.lineColor(Color.parseColor("#e55e5e"))
-                        ));
-                    }
-                });
+//                mapboxMap.setStyle(Style.MAPBOX_STREETS, new Style.OnStyleLoaded() {
+//                    @Override
+//                    public void onStyleLoaded(@NonNull Style style) {
+//                        //mapbox:mapbox_styleUrl="mapbox://styles/mapbox/streets-v10"
+//                        //init route points
+//                        List<Point> routeCoordinates = new ArrayList<>();
+//
+//                        style.addSource(new GeoJsonSource("line-source",
+//                                FeatureCollection.fromFeatures(new Feature[] {Feature.fromGeometry(
+//                                        LineString.fromLngLats(routeCoordinates)
+//                                )})));
+//
+//                        style.addLayer(new LineLayer("linelayer", "line-source").withProperties(
+//                                PropertyFactory.lineDasharray(new Float[] {0.01f, 2f}),
+//                                PropertyFactory.lineCap(Property.LINE_CAP_ROUND),
+//                                PropertyFactory.lineJoin(Property.LINE_JOIN_ROUND),
+//                                PropertyFactory.lineWidth(5f),
+//                                PropertyFactory.lineColor(Color.parseColor("#e55e5e"))
+//                        ));
+//                    }
+//                });
                 showPoints(mapboxMap);
             }
         });

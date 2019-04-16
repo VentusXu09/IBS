@@ -1,19 +1,25 @@
 package com.mirrordust.telecomlocate.gui;
 
 import android.content.Intent;
+import android.graphics.PorterDuff;
 import android.support.annotation.CallSuper;
 import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
@@ -26,17 +32,25 @@ import com.mirrordust.telecomlocate.util.PermissionHelper;
 public abstract class BaseActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         PermissionHelper.PermissionListener,
-        BaseActivityListener {
+        BaseActivityListener,
+        FragmentManager.OnBackStackChangedListener {
     private static final String TAG = "BaseActivity";
     private FragmentController mFragmentController;
+    private Menu mMenu;
+    private CoordinatorLayout mCoordinatorLayout;
 
     protected FrameLayout mMainContainer;
     private BaseFragment mFragment;
+    private Toolbar mToolbar;
+
+    // header type is pending on fragment setting, or defined by child class
+    private HeaderType mHeaderType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(getLayoutId());
+        mFragmentController = new FragmentController(this, this);
         initUI(savedInstanceState);
     }
 
@@ -75,10 +89,54 @@ public abstract class BaseActivity extends AppCompatActivity
 //        if (sfFragment != null && savedInstanceState == null) {
 //            installFragment(sfFragment, true);
 //        }
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
         mMainContainer = findViewById(R.id.tcl_container);
         BaseFragment baseFragment = getInitialFragment();
         if (baseFragment != null && null == savedInstanceState) {
             installFragment(baseFragment, true);
+        }
+    }
+
+    private void setHeaderType(HeaderType headerType) {
+        mHeaderType = headerType;
+        updateHeader();
+    }
+
+    public void updateHeader(HeaderType headerType, HeaderIconType iconType){
+//        updateHeaderWithIconType(iconType);
+        setHeaderType(headerType);
+    }
+
+
+
+    protected void updateHeader() {
+        if (getSupportActionBar() != null && mHeaderType != null) {
+            //reset visibility first
+            mCoordinatorLayout.setVisibility(View.VISIBLE);
+            mToolbar.setVisibility(View.VISIBLE);
+            mMainContainer.setVisibility(View.VISIBLE);
+        }
+        switch (mHeaderType) {
+            case TITLE:
+                mCoordinatorLayout.setVisibility(View.VISIBLE);
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                mToolbar.setVisibility(View.VISIBLE);
+                mMainContainer.setPadding(0, 0, 0, 0);
+                break;
+            case BLANK:
+                if (mToolbar != null) {
+                    mToolbar.setVisibility(View.GONE);
+                }
+                break;
+            case BLANK_FITS_SYSTEM_WINDOW:
+                setTitle(null);
+                mToolbar.setVisibility(View.GONE);
+                mMainContainer.setPadding(0, 0, 0, 0);
+                break;
         }
     }
 
@@ -219,6 +277,11 @@ public abstract class BaseActivity extends AppCompatActivity
         if (!popCurrentFragment()) {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    public void onBackStackChanged() {
+
     }
 
     /**

@@ -10,6 +10,7 @@ import android.support.annotation.NonNull;
  * Created by ventus0905 on 04/12/2019
  */
 public class ViewModelFactory extends ViewModelProvider.NewInstanceFactory {
+
     @SuppressLint("StaticFieldLeak")
     private static volatile ViewModelFactory INSTANCE;
 

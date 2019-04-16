@@ -1,5 +1,6 @@
 package com.mirrordust.telecomlocate.adapter;
 
+import android.app.Activity;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -12,6 +13,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.mirrordust.telecomlocate.R;
+import com.mirrordust.telecomlocate.activity.GalleryActivity;
 import com.mirrordust.telecomlocate.entity.DataSet;
 import com.mirrordust.telecomlocate.interf.DataContract;
 import com.mirrordust.telecomlocate.util.Utils;
@@ -26,12 +28,14 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.DataViewHolder
 
     public static final String TAG = "DataAdapter";
 
+    private Activity mActivity;
     private DataContract.View mDataView;
     private RealmResults<DataSet> mDataSetList;
 
-    public DataAdapter(DataContract.View dataView, RealmResults<DataSet> dataSetList) {
+    public DataAdapter(DataContract.View dataView, RealmResults<DataSet> dataSetList, Activity activity) {
         mDataView = dataView;
         mDataSetList = dataSetList;
+        mActivity = activity;
     }
 
     public void onDataSetRemove() {
@@ -95,6 +99,8 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.DataViewHolder
             holder.dataSetInfo.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    dataSet.getIndex();
+                    GalleryActivity.launchActivity(mActivity, dataSet.getIndex());
                     // TODO: 2017/07/31/031 dataset详细
                     Log.e(TAG, "dataset详细");
                 }

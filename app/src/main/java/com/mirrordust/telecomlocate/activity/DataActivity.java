@@ -53,7 +53,7 @@ public class DataActivity extends AppCompatActivity implements DataContract.View
         mRecyclerView = (RecyclerView) findViewById(R.id.data_set_rv);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mAdapter = new DataAdapter(this, mPresenter.getDataSets());
+        mAdapter = new DataAdapter(this, mPresenter.getDataSets(), this);
         mRecyclerView.setAdapter(mAdapter);
     }
 

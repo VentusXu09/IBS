@@ -35,7 +35,9 @@ dependencies {
     androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    implementation 'com.mapbox.mapboxsdk:mapbox-android-sdk:7.3.0'
+    implementation ('com.mapbox.mapboxsdk:mapbox-android-sdk:7.3.0'){
+        transitive = true
+    }
     implementation "net.gotev:uploadservice:$uploadServiceVersion"
     implementation "net.gotev:uploadservice-okhttp:$uploadServiceVersion"
     implementation "com.android.support:appcompat-v7:${support_lib_version}"

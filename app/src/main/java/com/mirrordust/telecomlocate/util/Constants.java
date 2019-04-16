@@ -11,7 +11,7 @@ public class Constants {
     public static String UPLOAD_URL = "http://116.62.124.55:8080/uploads";
 
     public static String LINE_SOURCE = "line_source";
-    public static boolean FAKE_API = true;
+    public static boolean FAKE_API = false;
     public static String SAMPLE_INDEX = "sample_index";
 
     public enum BaseStationType {

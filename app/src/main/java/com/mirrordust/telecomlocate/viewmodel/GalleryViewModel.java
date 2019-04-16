@@ -6,15 +6,13 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Transformations;
 import android.databinding.ObservableArrayList;
-import android.databinding.ObservableField;
 import android.databinding.ObservableList;
 import android.support.annotation.NonNull;
 
 import com.mapbox.geojson.Point;
-import com.mirrordust.telecomlocate.binding.SingleLiveEvent;
+import com.mirrordust.telecomlocate.entity.DataSet;
 import com.mirrordust.telecomlocate.model.DataHelper;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import io.realm.Realm;
@@ -25,6 +23,7 @@ import io.realm.Realm;
 public class GalleryViewModel extends AndroidViewModel {
     //UI Observer
     private final ObservableList<Point> pointList = new ObservableArrayList<>();
+    private final LiveData<String> title;
 
     //LiveData
     private final LiveData<List<Point>> pointListLiveData;
@@ -39,11 +38,18 @@ public class GalleryViewModel extends AndroidViewModel {
 
     public GalleryViewModel(@NonNull Application application) {
         super(application);
+        mRealm = Realm.getDefaultInstance();
         pointListLiveData = Transformations.switchMap(trigger, (points) -> {
             if (null == mRealm) {
                 return null;
             }
             return DataHelper.getPointsWithIndex(mRealm, trigger.getValue().getIndex());
+        });
+        title = Transformations.switchMap(trigger, (s) -> {
+            if (null == mRealm) {
+                return null;
+            }
+            return DataHelper.getDataSetName(mRealm, trigger.getValue().getIndex());
         });
     }
 
@@ -52,13 +58,13 @@ public class GalleryViewModel extends AndroidViewModel {
     }
 
     public void init(long index) {
-        mRealm = Realm.getDefaultInstance();
         this.index = index;
     }
 
     public void updateMapPoints(List<Point> points) {
         pointList.clear();
         pointList.addAll(points);
+
     }
 
     public void showDefatult() {
@@ -66,7 +72,7 @@ public class GalleryViewModel extends AndroidViewModel {
     }
 
     public boolean onBackPressed() {
-        return true;
+        return false;
     }
 
     //Getter and Setter
@@ -82,4 +88,7 @@ public class GalleryViewModel extends AndroidViewModel {
         return trigger;
     }
 
+    public LiveData<String> getTitle() {
+        return title;
+    }
 }

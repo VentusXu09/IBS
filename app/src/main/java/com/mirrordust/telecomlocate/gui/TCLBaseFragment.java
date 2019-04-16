@@ -36,8 +36,9 @@ public abstract class TCLBaseFragment extends ViewLifeCycleFragment implements B
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (getBaseActivity() != null) {
+        if (getBaseActivity() != null && getHeaderType() != null) {
             // as default set header type to title
+//            getBaseActivity().updateHeader(getHeaderType(), getHeaderIconType());
             setTitle(null); // set as default to avoid title overlap on switching fragment
         }
     }
@@ -182,6 +183,20 @@ public abstract class TCLBaseFragment extends ViewLifeCycleFragment implements B
         if (activity != null) {
             activity.invalidateOptionsMenu();
         }
+    }
+
+    @Override
+    public HeaderIconType getHeaderIconType() {
+        return mHeaderIconType != null ? mHeaderIconType : HeaderIconType.HAMBURGER;
+    }
+
+    /**
+     * pre-set the type of the header for display on the activity
+     */
+    @Nullable
+    @Override
+    public HeaderType getHeaderType() {
+        return HeaderType.TITLE;
     }
 
     public @Nullable

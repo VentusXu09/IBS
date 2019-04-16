@@ -24,8 +24,9 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".gui.BaseActivity"></activity>
-        <activity android:name=".activity.GalleryActivity" />
+        <activity android:name=".activity.GalleryActivity"
+            android:label="@string/activity_label_gallery"
+            android:theme="@style/AppTheme.NoActionBar.DarkStatusBar"/>
         <activity
             android:name=".activity.SampleActivity"
             android:label="@string/app_name"
