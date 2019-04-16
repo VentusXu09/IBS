@@ -182,6 +182,6 @@ public class DataActivity extends AppCompatActivity implements DataContract.View
             return "";
         }
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        return sharedPref.getString("upload_url", getString(R.string.pref_default_upload_url));
+        return Constants.UPLOAD_URL;
     }
 }

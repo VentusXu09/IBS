@@ -7,6 +7,9 @@ import com.mirrordust.telecomlocate.util.TextUtils;
  */
 
 public class Constants {
+    public static String MAPBOX_ACCESS_TOKEN = "pk.eyJ1IjoibWlycm9yZHVzdCIsImEiOiJjaXNjeXc2Y3owMDBmMnpwZjd2YnZvaWZhIn0.luGgUhgNCUpyNL4cACktHA";
+    public static String UPLOAD_URL = "http://116.62.124.55:8080/uploads";
+
     public static String LINE_SOURCE = "line_source";
     public static boolean FAKE_API = true;
     public static String SAMPLE_INDEX = "sample_index";
@@ -37,4 +40,6 @@ public class Constants {
             return type;
         }
     }
+
+
 }

@@ -14,6 +14,7 @@ import com.mirrordust.telecomlocate.adapter.SectionsPagerAdapter;
 import com.mirrordust.telecomlocate.fragment.DetailFragment;
 import com.mirrordust.telecomlocate.fragment.MapFragment;
 import com.mirrordust.telecomlocate.util.C;
+import com.mirrordust.telecomlocate.util.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +33,7 @@ public class SampleDetailActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Mapbox.getInstance(this, getString(R.string.mapbox_public_access_token));
+        Mapbox.getInstance(this, Constants.MAPBOX_ACCESS_TOKEN);
         setContentView(R.layout.activity_sample_detail);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

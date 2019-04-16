@@ -4,10 +4,6 @@
     <string name="go_to_settings">Go to settings</string>
     <string name="cancel">Cancel</string>
 
-    <!--mapbox-->
-    <string name="mapbox_public_access_token">pk.eyJ1IjoibWlycm9yZHVzdCIsImEiOiJjaXNjeXc2Y3owMDBmMnpwZjd2YnZvaWZhIn0.luGgUhgNCUpyNL4cACktHA</string>
-
-
     <!--main activity drawer strings-->
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
