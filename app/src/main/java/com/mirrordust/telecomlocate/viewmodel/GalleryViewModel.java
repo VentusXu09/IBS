@@ -5,7 +5,6 @@ import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Transformations;
-import android.databinding.BindingAdapter;
 import android.databinding.ObservableArrayList;
 import android.databinding.ObservableField;
 import android.databinding.ObservableList;
@@ -17,21 +16,18 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
-import com.mapbox.geojson.Point;
 import com.mirrordust.telecomlocate.entity.BaseStation;
-import com.mirrordust.telecomlocate.entity.DataSet;
 import com.mirrordust.telecomlocate.entity.Geomagnetism;
 import com.mirrordust.telecomlocate.entity.Sample;
 import com.mirrordust.telecomlocate.model.DataHelper;
 import com.mirrordust.telecomlocate.util.Constants;
-import com.mirrordust.telecomlocate.util.UIUtils;
 import com.mirrordust.telecomlocate.util.Utils;
 
-import java.sql.Time;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import io.realm.Realm;
 
@@ -57,8 +53,8 @@ public class GalleryViewModel extends AndroidViewModel {
     private long index;
 
     private static final float TIME_GAP = 3f;
-    private static final float SIGNAL_STRENGTH_GAP = 15f;
-    private static final float MAGNETIC_STRENGTH_GAP = 18f;
+    private static final float SIGNAL_STRENGTH_GAP = 10f;
+    private static final float MAGNETIC_STRENGTH_GAP = 12f;
 
     private HashMap<String, Integer> colorDict = new HashMap<>();
 
@@ -121,10 +117,6 @@ public class GalleryViewModel extends AndroidViewModel {
             time += TIME_GAP;
         }
 
-        List<Entry> indoorAbrupt = new ArrayList<>();
-        List<Entry> outdoorAbrupt = new ArrayList<>();
-
-
         LineDataSet set1 = generateLineDataSet(entries2G, "2G Signal", -1);
         LineData data = new LineData(set1);
 
@@ -172,6 +164,8 @@ public class GalleryViewModel extends AndroidViewModel {
             Entry entry2 = entries.get(i-3);
             if (Math.abs(entry1.getY() - entry2.getY()) > dataGap) {
                 changedPoints.add(entry1.getX());
+                changedPoints.add(entries.get(i-2).getX());
+                changedPoints.add(entries.get(i-1).getX());
             }
         }
         return changedPoints;
@@ -183,8 +177,15 @@ public class GalleryViewModel extends AndroidViewModel {
         for (int i = 3; i < entries.size(); i++) {
             Entry entry1 = entries.get(i);
             Entry entry2 = entries.get(i-3);
-            if (entry1.getY() - entry2.getY() > dataGap) {
+            if (isMore && entry1.getY() - entry2.getY() > dataGap) {
                 abruptPoints.add(entry1.getX());
+                abruptPoints.add(entries.get(i-2).getX());
+                abruptPoints.add(entries.get(i-1).getX());
+            } else if (!isMore && entry1.getY() - entry2.getY() < dataGap) {
+                abruptPoints.add(entry1.getX());
+                abruptPoints.add(entry1.getX());
+                abruptPoints.add(entries.get(i-2).getX());
+                abruptPoints.add(entries.get(i-1).getX());
             }
         }
         return abruptPoints;
@@ -192,13 +193,27 @@ public class GalleryViewModel extends AndroidViewModel {
 
     private List<Float> judgeIOSwitch(List<Float> signals2G, List<Float> signals4G, List<Float> magnetics) {
         List<Float> signals = signals2G;
-        signals.retainAll(signals4G);
+        signals.addAll(signals4G);
+        Collections.sort(signals2G);
         signals.retainAll(magnetics);
-        for (int i = 3; i<signals.size(); i++) {
-            if (signals.get(i) - signals.get(i-3) == TIME_GAP) {
-                signals.remove(i-3);
+        Iterator<Float> iterator = signals.iterator();
+        if (iterator.hasNext()) {
+            Float f1 = iterator.next();
+            Float f2;
+            while (iterator.hasNext()) {
+                f2 = iterator.next();
+                if (f2 - f1 <= TIME_GAP * 3) {
+                    iterator.remove();
+                }
+                f1 = f2;
             }
         }
+
+//        for (int i = 1; i<signals.size(); i++) {
+//            if (signals.get(i) - signals.get(i-1) <= TIME_GAP*3) {
+//                signals.remove(i-1);
+//            }
+//        }
         return signals;
     }
 
@@ -236,4 +251,5 @@ public class GalleryViewModel extends AndroidViewModel {
     public LiveData<String> getTitle() {
         return title;
     }
+
 }

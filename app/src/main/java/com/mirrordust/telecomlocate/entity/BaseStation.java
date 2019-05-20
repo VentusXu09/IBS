@@ -7,7 +7,7 @@ import io.realm.RealmObject;
  */
 
 public class BaseStation extends RealmObject {
-    public BaseStation newInstance(int mcc, int mnc, int lac, int cid, int arfcn, int bsic_psc_pci, double lon, double lat, int asuLevel, int signalLevel, int dbm, String type) {
+    public static BaseStation newInstance(int mcc, int mnc, int lac, int cid, int arfcn, int bsic_psc_pci, double lon, double lat, int asuLevel, int signalLevel, int dbm, String type) {
         BaseStation instance = new BaseStation();
         instance.setMcc(mcc);
         instance.setMnc(mnc);
@@ -24,12 +24,12 @@ public class BaseStation extends RealmObject {
         return instance;
     }
 
-    public BaseStation newInstance(int mcc, int mnc, int lac, int cid, int arfcn, int bsic_psc_pci, double lon, double lat, String type) {
+    public static BaseStation newInstance(int mcc, int mnc, int lac, int cid, int arfcn, int bsic_psc_pci, double lon, double lat, String type) {
         return newInstance(mcc, mnc, lac, cid, arfcn, bsic_psc_pci, lon, lat, 0,0,0, type);
     }
 
-    public BaseStation emptyInstance() {
-        return newInstance(0,0,0,0,0,0,0.0d, 0.0d, "");
+    public static BaseStation emptyInstance() {
+        return newInstance(0,0,0,0,0,0,0.0d, 0.0d, "NULL");
     }
 
     private int mcc;            // Mobile Country Code

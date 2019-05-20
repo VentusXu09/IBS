@@ -189,6 +189,7 @@ public class SamplePresenter implements SampleContract.Presenter, OnAddOrUpdateS
     public void onAddOrUpdateSample() {
         isInitializing = false;
         mRecording = true;
+        mSampleView.setActivityTitle("Recording...");
         mSampleView.addSample();
     }
 }

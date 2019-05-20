@@ -1,4 +1,4 @@
-package com.mirrordust.telecomlocate.util;
+package com.mirrordust.telecomlocate.serializer;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -19,6 +19,10 @@ public class BaseStationSerializer implements JsonSerializer<BaseStation> {
         jsonObject.addProperty("mnc", src.getMnc());
         jsonObject.addProperty("cid", src.getCid());
         jsonObject.addProperty("lac", src.getLac());
+        jsonObject.addProperty("arfcn", src.getArfcn());
+        jsonObject.addProperty("bsic_psc_pci", src.getBsic_psc_pci());
+        jsonObject.addProperty("asuLevel", src.getAsuLevel());
+        jsonObject.addProperty("signalLevel", src.getSignalLevel());
         jsonObject.addProperty("type", src.getType());
         jsonObject.addProperty("Dbm", src.getDbm());
 

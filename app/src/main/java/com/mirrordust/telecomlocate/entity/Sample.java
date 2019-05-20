@@ -113,7 +113,7 @@ public class Sample extends RealmObject {
 
     public void setMBS() {
         if (null == BSList || BSList.size() == 0) {
-            this.MBS = new BaseStation().emptyInstance();
+            this.MBS = BaseStation.emptyInstance();
             return;
         }
         this.MBS = BSList.first();

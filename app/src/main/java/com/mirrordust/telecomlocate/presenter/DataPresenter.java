@@ -13,6 +13,12 @@ import com.google.gson.GsonBuilder;
 import com.mirrordust.telecomlocate.entity.Barometric;
 import com.mirrordust.telecomlocate.entity.BaseStation;
 import com.mirrordust.telecomlocate.entity.Battery;
+import com.mirrordust.telecomlocate.serializer.BarometricSerializer;
+import com.mirrordust.telecomlocate.serializer.BaseStationSerializer;
+import com.mirrordust.telecomlocate.serializer.BatterySerializer;
+import com.mirrordust.telecomlocate.serializer.GeomagnetismSerializer;
+import com.mirrordust.telecomlocate.serializer.LatLngSerializer;
+import com.mirrordust.telecomlocate.serializer.SignalSerialzer;
 import com.mirrordust.telecomlocate.util.Constants;
 import com.mirrordust.telecomlocate.entity.DataSet;
 import com.mirrordust.telecomlocate.entity.Device;
@@ -24,7 +30,7 @@ import com.mirrordust.telecomlocate.interf.DataContract;
 import com.mirrordust.telecomlocate.model.DataHelper;
 import com.mirrordust.telecomlocate.model.DeviceManager;
 import com.mirrordust.telecomlocate.pojo.UploadResponse;
-import com.mirrordust.telecomlocate.util.SampleSerializer;
+import com.mirrordust.telecomlocate.serializer.SampleSerializer;
 import com.mirrordust.telecomlocate.util.Utils;
 
 import net.gotev.uploadservice.MultipartUploadRequest;
@@ -143,11 +149,9 @@ public class DataPresenter implements DataContract.Presenter {
             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
 
             // write file
-            bufferedWriter.write(deviceInfo());
-            bufferedWriter.write(MRHeader(samples.size()));
-            for (Sample s : samples) {
-                bufferedWriter.write(SerializeToJson(s));
-            }
+            String s1 = "{\"samples\":" +
+                    SerializeToJson(samples) + "}";
+            bufferedWriter.write(s1);
 
             bufferedWriter.close();
             fileWriter.close();
@@ -329,7 +333,7 @@ public class DataPresenter implements DataContract.Presenter {
 
     private String exportName(String name, String desc) {
         String suffix = Utils.dataSetDesc2FileSuffix(desc);
-        return String.format("%s_%s.txt", name, suffix);
+        return String.format("%s_%s.json", name, suffix);
     }
 
     private boolean fileExisted(String name) {
@@ -345,7 +349,7 @@ public class DataPresenter implements DataContract.Presenter {
         return Environment.MEDIA_MOUNTED.equals(state);
     }
 
-    public String SerializeToJson(Sample sample) {
+    public String SerializeToJson(RealmResults<Sample> sample) {
         Gson gson = new GsonBuilder()
                 .setExclusionStrategies(new ExclusionStrategy() {
                     @Override
@@ -358,8 +362,14 @@ public class DataPresenter implements DataContract.Presenter {
                         return false;
                     }
                 })
+                .registerTypeAdapter(Barometric.class, new BarometricSerializer())
+                .registerTypeAdapter(BaseStation.class, new BaseStationSerializer())
+                .registerTypeAdapter(Battery.class, new BatterySerializer())
+                .registerTypeAdapter(Geomagnetism.class, new GeomagnetismSerializer())
+                .registerTypeAdapter(LatLng.class, new LatLngSerializer())
+                .registerTypeAdapter(Signal.class, new SignalSerialzer())
                 .registerTypeAdapter(Sample.class, new SampleSerializer())
                 .create();
-        return gson.toJson(sample);
+        return gson.toJson(mRealm.copyFromRealm(sample));
     }
 }

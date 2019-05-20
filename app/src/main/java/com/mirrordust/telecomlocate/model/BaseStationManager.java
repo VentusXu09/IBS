@@ -73,13 +73,13 @@ public class BaseStationManager {
             CellIdentityWcdma cellIdentityWcdma = cellInfoWcdma.getCellIdentity();
             CellSignalStrengthWcdma cellSignalStrengthWcdma = cellInfoWcdma.getCellSignalStrength();
             if (null != cellSignalStrengthWcdma) {
-                baseStation = new BaseStation().newInstance(mcc, mnc, cellIdentityWcdma.getLac(), cellIdentityWcdma.getCid(),
+                baseStation = BaseStation.newInstance(mcc, mnc, cellIdentityWcdma.getLac(), cellIdentityWcdma.getCid(),
                         getArfcn(cellIdentityWcdma), cellIdentityWcdma.getPsc(), 0, 0,
                         cellSignalStrengthWcdma.getAsuLevel(), cellSignalStrengthWcdma.getLevel(), cellSignalStrengthWcdma.getDbm(),
                         Constants.BaseStationType.WCDMA.getValue()
                         );
             } else {
-                baseStation = new BaseStation().newInstance(mcc, mnc, cellIdentityWcdma.getLac(), cellIdentityWcdma.getCid(),
+                baseStation = BaseStation.newInstance(mcc, mnc, cellIdentityWcdma.getLac(), cellIdentityWcdma.getCid(),
                         getArfcn(cellIdentityWcdma), cellIdentityWcdma.getPsc(), 0, 0,
                         Constants.BaseStationType.WCDMA.getValue());
             }
@@ -88,12 +88,12 @@ public class BaseStationManager {
             CellIdentityLte cellIdentityLte = cellInfoLte.getCellIdentity();
             CellSignalStrengthLte cellSignalStrengthLte = cellInfoLte.getCellSignalStrength();
             if (cellSignalStrengthLte != null) {
-                baseStation = new BaseStation().newInstance(cellIdentityLte.getMcc(), cellIdentityLte.getMnc(), cellIdentityLte.getTac(), cellIdentityLte.getCi(),
+                baseStation = BaseStation.newInstance(cellIdentityLte.getMcc(), cellIdentityLte.getMnc(), cellIdentityLte.getTac(), cellIdentityLte.getCi(),
                         getArfcn(cellIdentityLte), cellIdentityLte.getPci(), 0, 0,
                         cellSignalStrengthLte.getAsuLevel(), cellSignalStrengthLte.getLevel(), cellSignalStrengthLte.getDbm(),
                         Constants.BaseStationType.LTE.getValue());
             } else {
-                baseStation = new BaseStation().newInstance(cellIdentityLte.getMcc(), cellIdentityLte.getMnc(), cellIdentityLte.getTac(), cellIdentityLte.getCi(),
+                baseStation = BaseStation.newInstance(cellIdentityLte.getMcc(), cellIdentityLte.getMnc(), cellIdentityLte.getTac(), cellIdentityLte.getCi(),
                         getArfcn(cellIdentityLte), cellIdentityLte.getPci(), 0, 0,
                         Constants.BaseStationType.LTE.getValue());
             }
@@ -102,12 +102,12 @@ public class BaseStationManager {
             CellIdentityGsm cellIdentityGsm = cellInfoGsm.getCellIdentity();
             CellSignalStrengthGsm cellSignalStrengthGsm = cellInfoGsm.getCellSignalStrength();
             if (cellSignalStrengthGsm != null) {
-                baseStation = new BaseStation().newInstance(mcc, mnc, cellIdentityGsm.getLac(), cellIdentityGsm.getCid(),
+                baseStation = BaseStation.newInstance(mcc, mnc, cellIdentityGsm.getLac(), cellIdentityGsm.getCid(),
                         getArfcn(cellIdentityGsm), cellIdentityGsm.getPsc(), 0, 0,
                         cellSignalStrengthGsm.getAsuLevel(), cellSignalStrengthGsm.getLevel(), cellSignalStrengthGsm.getDbm(),
                         Constants.BaseStationType.GSM.getValue());
             } else {
-                baseStation = new BaseStation().newInstance(mcc, mnc, cellIdentityGsm.getLac(), cellIdentityGsm.getCid(),
+                baseStation = BaseStation.newInstance(mcc, mnc, cellIdentityGsm.getLac(), cellIdentityGsm.getCid(),
                         getArfcn(cellIdentityGsm), cellIdentityGsm.getPsc(), 0, 0,
                         Constants.BaseStationType.GSM.getValue());
             }
@@ -116,11 +116,11 @@ public class BaseStationManager {
             CellIdentityCdma cellIdentityCdma = cellInfoCdma.getCellIdentity();
             CellSignalStrengthCdma cellSignalStrengthCdma = cellInfoCdma.getCellSignalStrength();
             if (null == cellSignalStrengthCdma) {
-                baseStation = new BaseStation().newInstance(mcc, mnc, cellIdentityCdma.getNetworkId(), cellIdentityCdma.getBasestationId(),
+                baseStation = BaseStation.newInstance(mcc, mnc, cellIdentityCdma.getNetworkId(), cellIdentityCdma.getBasestationId(),
                         cellIdentityCdma.getNetworkId(), cellIdentityCdma.getBasestationId(), cellIdentityCdma.getLongitude(), cellIdentityCdma.getLatitude(),
                         Constants.BaseStationType.CDMA.getValue());
             } else {
-                baseStation = new BaseStation().newInstance(mcc, mnc, cellIdentityCdma.getNetworkId(), cellIdentityCdma.getBasestationId(),
+                baseStation = BaseStation.newInstance(mcc, mnc, cellIdentityCdma.getNetworkId(), cellIdentityCdma.getBasestationId(),
                         cellIdentityCdma.getNetworkId(), cellIdentityCdma.getBasestationId(), cellIdentityCdma.getLongitude(), cellIdentityCdma.getLatitude(),
                         cellSignalStrengthCdma.getAsuLevel(), cellSignalStrengthCdma.getCdmaLevel(), cellSignalStrengthCdma.getCdmaDbm(),
                         Constants.BaseStationType.CDMA.getValue());

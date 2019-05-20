@@ -8,12 +8,15 @@ public class Constants {
     public static String MAPBOX_ACCESS_TOKEN = "pk.eyJ1IjoibWlycm9yZHVzdCIsImEiOiJjaXNjeXc2Y3owMDBmMnpwZjd2YnZvaWZhIn0.luGgUhgNCUpyNL4cACktHA";
     public static String UPLOAD_URL = "http://116.62.124.55:8080/uploads";
 
+    public static Long DEFAULT_SAMPLING_INTERVAL = 10l;
+
     public static String LINE_SOURCE = "line_source";
     public static boolean FAKE_API = false;
     public static String SAMPLE_INDEX = "sample_index";
 
     public static final float CHART_MAXINUM = 80f;
     public static final float CHART_MININUM = -120f;
+
 
     public enum BaseStationType {
         GSM("GSM"), CDMA("CDMA"), LTE("LTE"), WCDMA("WCDMA");
