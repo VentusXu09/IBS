@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 
 import com.mirrordust.telecomlocate.fragment.GalleryFragment;
+import com.mirrordust.telecomlocate.fragment.RecordFragment;
 import com.mirrordust.telecomlocate.gui.BaseActivity;
 import com.mirrordust.telecomlocate.gui.BaseFragment;
 import com.mirrordust.telecomlocate.viewmodel.GalleryViewModel;
@@ -31,7 +32,6 @@ public class GalleryActivity extends BaseActivity {
         GalleryViewModel galleryViewModel = obtainViewModel(this);
         long index = getIntent().getLongExtra(SAMPLE_INDEX, 0);
         galleryViewModel.init(index);
-        setContentView(getLayoutId());
     }
 
     public static GalleryViewModel obtainViewModel(FragmentActivity activity) {

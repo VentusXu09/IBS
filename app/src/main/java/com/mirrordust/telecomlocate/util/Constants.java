@@ -12,6 +12,9 @@ public class Constants {
     public static boolean FAKE_API = false;
     public static String SAMPLE_INDEX = "sample_index";
 
+    public static final float CHART_MAXINUM = 80f;
+    public static final float CHART_MININUM = -120f;
+
     public enum BaseStationType {
         GSM("GSM"), CDMA("CDMA"), LTE("LTE"), WCDMA("WCDMA");
         String value;

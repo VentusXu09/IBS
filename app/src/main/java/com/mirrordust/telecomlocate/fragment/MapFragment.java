@@ -21,14 +21,20 @@ import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.maps.Style;
+import com.mapbox.mapboxsdk.plugins.annotation.Symbol;
+import com.mapbox.mapboxsdk.plugins.annotation.SymbolManager;
+import com.mapbox.mapboxsdk.plugins.annotation.SymbolOptions;
 import com.mapbox.mapboxsdk.style.layers.LineLayer;
 import com.mapbox.mapboxsdk.style.layers.Property;
 import com.mapbox.mapboxsdk.style.layers.PropertyFactory;
+import com.mapbox.mapboxsdk.style.sources.GeoJsonOptions;
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
+import com.mapbox.mapboxsdk.utils.BitmapUtils;
 import com.mirrordust.telecomlocate.R;
 import com.mirrordust.telecomlocate.activity.SampleDetailActivity;
 import com.mirrordust.telecomlocate.entity.Sample;
 import com.mirrordust.telecomlocate.model.DataHelper;
+import com.mirrordust.telecomlocate.util.UIUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -91,28 +97,31 @@ public class MapFragment extends Fragment {
         mMapView.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady(MapboxMap mapboxMap) {
-//                mapboxMap.setStyle(Style.MAPBOX_STREETS, new Style.OnStyleLoaded() {
-//                    @Override
-//                    public void onStyleLoaded(@NonNull Style style) {
-//                        //mapbox:mapbox_styleUrl="mapbox://styles/mapbox/streets-v10"
-//                        //init route points
-//                        List<Point> routeCoordinates = new ArrayList<>();
-//
-//                        style.addSource(new GeoJsonSource("line-source",
-//                                FeatureCollection.fromFeatures(new Feature[] {Feature.fromGeometry(
-//                                        LineString.fromLngLats(routeCoordinates)
-//                                )})));
-//
-//                        style.addLayer(new LineLayer("linelayer", "line-source").withProperties(
-//                                PropertyFactory.lineDasharray(new Float[] {0.01f, 2f}),
-//                                PropertyFactory.lineCap(Property.LINE_CAP_ROUND),
-//                                PropertyFactory.lineJoin(Property.LINE_JOIN_ROUND),
-//                                PropertyFactory.lineWidth(5f),
-//                                PropertyFactory.lineColor(Color.parseColor("#e55e5e"))
-//                        ));
-//                    }
-//                });
-                showPoints(mapboxMap);
+                mapboxMap.setStyle(Style.MAPBOX_STREETS, new Style.OnStyleLoaded() {
+                    @Override
+                    public void onStyleLoaded(@NonNull Style style) {
+                        LatLng latLng = new LatLng(latitude, longitude);
+
+                        CameraPosition cameraPosition = new CameraPosition.Builder()
+                                .target(latLng)
+                                .zoom(17)
+                                .build();
+                        mapboxMap.setCameraPosition(cameraPosition);
+
+                        style.addImage(UIUtils.ID_ICON_MARKER, BitmapUtils.getBitmapFromDrawable(getResources().getDrawable(R.drawable.marker_64dp, null)), true);
+                        GeoJsonOptions geoJsonOptions = new GeoJsonOptions().withTolerance(0.4f);
+                        SymbolManager symbolManager = new SymbolManager(mMapView, mapboxMap, style, null, geoJsonOptions);
+                        symbolManager.setIconAllowOverlap(true);
+                        SymbolOptions symbolOptions = new SymbolOptions()
+                                .withLatLng(latLng)
+                                .withIconImage(UIUtils.ID_ICON_MARKER)
+                                .withIconSize(1.3f)
+                                .withZIndex(10)
+                                .withDraggable(false);
+
+                        Symbol symbol = symbolManager.create(symbolOptions);
+                    }
+                });
             }
         });
     }

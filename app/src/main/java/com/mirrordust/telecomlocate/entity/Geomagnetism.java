@@ -13,6 +13,7 @@ public class Geomagnetism extends RealmObject {
     private double alpha;
     private double beta;
     private double gamma;
+    private float magneticIntensity;
 
     public double getX() {
         return x;
@@ -60,6 +61,14 @@ public class Geomagnetism extends RealmObject {
 
     public void setGamma(double gamma) {
         this.gamma = gamma;
+    }
+
+    public float getMagneticIntensity() {
+        return magneticIntensity;
+    }
+
+    public void setMagneticIntensity(float magneticIntensity) {
+        this.magneticIntensity = magneticIntensity;
     }
 
     @Override

@@ -13,4 +13,13 @@
 
     <dimen name="about_image_view_size">27dp</dimen>
 
+    <!-- These fonts are to be used only with the according styles , do not use them directly -->
+    <dimen name="font_display_one_size">34sp</dimen>
+    <dimen name="font_display_two_size">44sp</dimen>
+    <dimen name="font_headline_size">24sp</dimen>
+    <dimen name="font_title_size">20sp</dimen>
+    <dimen name="font_subheading_size">16sp</dimen>
+    <dimen name="font_body_size">14sp</dimen>
+    <dimen name="font_caption_size">12sp</dimen>
+    <dimen name="font_button_size">14sp</dimen>
 </resources>

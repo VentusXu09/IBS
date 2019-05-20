@@ -38,7 +38,7 @@ public abstract class TCLBaseFragment extends ViewLifeCycleFragment implements B
         super.onAttach(context);
         if (getBaseActivity() != null && getHeaderType() != null) {
             // as default set header type to title
-//            getBaseActivity().updateHeader(getHeaderType(), getHeaderIconType());
+            getBaseActivity().updateHeader(getHeaderType(), getHeaderIconType());
             setTitle(null); // set as default to avoid title overlap on switching fragment
         }
     }

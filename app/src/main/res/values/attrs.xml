@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="button_primary" format="reference|color"/>
+    <attr name="button_secondary" format="reference|color"/>
+    <attr name="circle_color" format="color"/>
+    <attr name="background_color" format="color"/>
+</resources>

@@ -329,4 +329,19 @@ public class BaseStationManager {
         }
         return arfcn;
     }
+
+    private List<BaseStation> adjustBaseStation(List<BaseStation> baseStations) {
+        List<BaseStation> LTEStations = new ArrayList<>();
+        for (BaseStation baseStation : baseStations) {
+            if (baseStation.getType().equalsIgnoreCase(Constants.BaseStationType.LTE.getValue())) {
+                LTEStations.add(baseStation);
+            }
+        }
+        if (LTEStations.size() > 0) {
+            BaseStation first = LTEStations.get(0);
+            int prc = first.getBsic_psc_pci();
+
+        }
+        return baseStations;
+    }
 }

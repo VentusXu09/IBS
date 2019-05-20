@@ -67,7 +67,7 @@ public class SampleManager {
                             latLng.setSpeed(location.getSpeed());
                             record.setLatLng(latLng);
                         } else {
-                            record.setLatLng(LatLng.createEmptyLatLng());
+                            record.setLatLng(null);
                         }
                         RealmList<BaseStation> cellularTowerRealmList = new RealmList<>();
                         if (cellularTowers != null && cellularTowers.size() > 0) {

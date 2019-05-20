@@ -6,7 +6,10 @@ import android.util.Log;
 import android.util.LongSparseArray;
 import android.widget.Toast;
 
+import com.google.gson.ExclusionStrategy;
+import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.mirrordust.telecomlocate.entity.Barometric;
 import com.mirrordust.telecomlocate.entity.BaseStation;
 import com.mirrordust.telecomlocate.entity.Battery;
@@ -21,6 +24,7 @@ import com.mirrordust.telecomlocate.interf.DataContract;
 import com.mirrordust.telecomlocate.model.DataHelper;
 import com.mirrordust.telecomlocate.model.DeviceManager;
 import com.mirrordust.telecomlocate.pojo.UploadResponse;
+import com.mirrordust.telecomlocate.util.SampleSerializer;
 import com.mirrordust.telecomlocate.util.Utils;
 
 import net.gotev.uploadservice.MultipartUploadRequest;
@@ -37,6 +41,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 
 import io.realm.Realm;
+import io.realm.RealmObject;
 import io.realm.RealmResults;
 
 /**
@@ -141,7 +146,7 @@ public class DataPresenter implements DataContract.Presenter {
             bufferedWriter.write(deviceInfo());
             bufferedWriter.write(MRHeader(samples.size()));
             for (Sample s : samples) {
-                bufferedWriter.write(sampleMR(s));
+                bufferedWriter.write(SerializeToJson(s));
             }
 
             bufferedWriter.close();
@@ -338,5 +343,23 @@ public class DataPresenter implements DataContract.Presenter {
     private boolean isExternalStorageWritable() {
         String state = Environment.getExternalStorageState();
         return Environment.MEDIA_MOUNTED.equals(state);
+    }
+
+    public String SerializeToJson(Sample sample) {
+        Gson gson = new GsonBuilder()
+                .setExclusionStrategies(new ExclusionStrategy() {
+                    @Override
+                    public boolean shouldSkipField(FieldAttributes f) {
+                        return f.getDeclaringClass().equals(RealmObject.class);
+                    }
+
+                    @Override
+                    public boolean shouldSkipClass(Class<?> clazz) {
+                        return false;
+                    }
+                })
+                .registerTypeAdapter(Sample.class, new SampleSerializer())
+                .create();
+        return gson.toJson(sample);
     }
 }

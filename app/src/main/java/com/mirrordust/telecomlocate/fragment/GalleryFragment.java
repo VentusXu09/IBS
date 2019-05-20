@@ -2,6 +2,8 @@ package com.mirrordust.telecomlocate.fragment;
 
 import android.arch.lifecycle.Observer;
 import android.databinding.DataBindingUtil;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -10,13 +12,20 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SeekBar;
+import android.widget.TextView;
 
-import com.mapbox.geojson.Point;
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.utils.ColorTemplate;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mirrordust.telecomlocate.R;
 import com.mirrordust.telecomlocate.activity.GalleryActivity;
 import com.mirrordust.telecomlocate.databinding.FragmentGalleryBinding;
+import com.mirrordust.telecomlocate.entity.Sample;
 import com.mirrordust.telecomlocate.gui.TCLBaseFragment;
 import com.mirrordust.telecomlocate.util.Constants;
 import com.mirrordust.telecomlocate.util.StringUtils;
@@ -27,12 +36,18 @@ import java.util.List;
 /**
  * Created by ventus0905 on 04/12/2019
  */
-public class GalleryFragment extends TCLBaseFragment {
+public class GalleryFragment extends TCLBaseFragment implements SeekBar.OnSeekBarChangeListener {
     private static final String TAG = "GalleryFragment";
 
     private GalleryViewModel mViewModel;
     private FragmentGalleryBinding fragmentGalleryBinding;
     private MapView mapView;
+    private LineChart lineChart;
+    private SeekBar seekBarX;
+    private TextView tvX;
+
+    protected Typeface tfRegular;
+    protected Typeface tfLight;
 
     public GalleryFragment() {
         // Required empty public constructor
@@ -51,6 +66,8 @@ public class GalleryFragment extends TCLBaseFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Mapbox.getInstance(getActivity(), Constants.MAPBOX_ACCESS_TOKEN);
+        tfRegular = Typeface.createFromAsset(getActivity().getAssets(), "OpenSans-Regular.ttf");
+        tfLight = Typeface.createFromAsset(getActivity().getAssets(), "OpenSans-Light.ttf");
     }
 
     @Override
@@ -65,6 +82,12 @@ public class GalleryFragment extends TCLBaseFragment {
 
         mapView = rootView.findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
+        lineChart = rootView.findViewById(R.id.lineChart);
+        tvX = rootView.findViewById(R.id.tvXMax);
+        seekBarX = rootView.findViewById(R.id.seekBar1);
+        seekBarX.setOnSeekBarChangeListener(this);
+        initLineChart();
+
         return rootView;
     }
 
@@ -75,13 +98,14 @@ public class GalleryFragment extends TCLBaseFragment {
     }
 
     private void setViewModel() {
-        mViewModel.getPointListLiveData().observe(this, new Observer<List<Point>>() {
+        mViewModel.getPointListLiveData().observe(this, new Observer<List<Sample>>() {
             @Override
-            public void onChanged(@Nullable List<Point> points) {
+            public void onChanged(@Nullable List<Sample> points) {
                 if (null == points) {
                     mViewModel.showDefatult();
                 } else {
                     mViewModel.updateMapPoints(points);
+                    mViewModel.generateLinePoints(points);
                 }
             }
         });
@@ -100,7 +124,58 @@ public class GalleryFragment extends TCLBaseFragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater) {
         super.onCreateOptionsMenu(menu, menuInflater);
-        mViewModel.start();
+    }
+
+    public void initLineChart() {
+        // no description text
+        lineChart.getDescription().setEnabled(false);
+
+        // enable touch gestures
+        lineChart.setTouchEnabled(true);
+
+        lineChart.setDragDecelerationFrictionCoef(0.9f);
+
+        // enable scaling and dragging
+        lineChart.setDragEnabled(true);
+        lineChart.setScaleEnabled(true);
+        lineChart.setDrawGridBackground(false);
+        lineChart.setHighlightPerDragEnabled(true);
+
+        // set an alternative background color
+        lineChart.setBackgroundColor(Color.WHITE);
+        lineChart.setViewPortOffsets(0f, 0f, 0f, 0f);
+
+        // add data
+        seekBarX.setProgress(100);
+
+        // get the legend (only possible after setting data)
+        Legend l = lineChart.getLegend();
+        l.setEnabled(false);
+
+        XAxis xAxis = lineChart.getXAxis();
+        xAxis.setPosition(XAxis.XAxisPosition.TOP_INSIDE);
+        xAxis.setTypeface(tfLight);
+        xAxis.setTextSize(10f);
+        xAxis.setTextColor(Color.WHITE);
+        xAxis.setDrawAxisLine(false);
+        xAxis.setDrawGridLines(true);
+        xAxis.setTextColor(Color.rgb(255, 192, 56));
+        xAxis.setCenterAxisLabels(true);
+        xAxis.setGranularity(1f); // one hour
+
+        YAxis leftAxis = lineChart.getAxisLeft();
+        leftAxis.setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART);
+        leftAxis.setTypeface(tfLight);
+        leftAxis.setTextColor(ColorTemplate.getHoloBlue());
+        leftAxis.setDrawGridLines(true);
+        leftAxis.setGranularityEnabled(true);
+        leftAxis.setAxisMinimum(Constants.CHART_MININUM);
+        leftAxis.setAxisMaximum(Constants.CHART_MAXINUM);
+        leftAxis.setYOffset(-9f);
+        leftAxis.setTextColor(Color.rgb(255, 192, 56));
+
+        YAxis rightAxis = lineChart.getAxisRight();
+        rightAxis.setEnabled(false);
     }
 
     @Override
@@ -151,4 +226,21 @@ public class GalleryFragment extends TCLBaseFragment {
         mapView.onSaveInstanceState(outState);
     }
 
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+
+        tvX.setText(String.valueOf(seekBarX.getProgress()));
+
+//        setData(seekBarX.getProgress(), 50);
+
+        // redraw
+        lineChart.invalidate();
+    }
+
+
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {}
+
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {}
 }

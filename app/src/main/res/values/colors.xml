@@ -27,4 +27,36 @@
     <color name="grey800">#424242</color>
     <color name="grey900">#212121</color>
 
+    <color name="tile_background_color">#ffffff</color>
+    <color name="tile_canvas_color">#fafafa</color>
+    <color name="primary_color">#333333</color>
+    <color name="background_color">#E5E5E5</color>
+    <color name="brand_blue_color">#3f5161</color>
+    <color name="brand_font_color">#CAE4FB</color>
+    <color name="hyperlink_color">#346187</color>
+    <color name="alpha_color">#e78c07</color>
+    <color name="beta_color">#2b7d2b</color>
+    <color name="gamma_color">@color/brand_blue_color</color>
+    <color name="delta_color">#bb0000</color>
+    <color name="ultralight_gray_color">#F2F2F2</color>
+    <color name="light_gray_color">#CCCCCC</color>
+    <color name="medium_gray_color">#878787</color>
+    <color name="dark_gray_color">#666666</color>
+    <color name="chart_color_4">#B0D450</color>
+    <color name="delta_color_light">#FF9B9B</color>
+    <color name="alpha_color_light">#F09967</color>
+
+    <color name="orange">#DD7B18</color>
+    <color name="white">#ffffffff</color>
+    <color name="black">#ff000000</color>
+    <color name="gray">#A3A1A1</color>
+    <color name="todo_bg_color">#2c2c2c</color>
+    <color name="content_header_color">#242424</color>
+    <color name="feed_icon_pressed">#ffb031</color>
+    <color name="red">#ff0000</color>
+
+    <color name="primary_btn_bg_pressed">@color/primary_color</color>
+    <color name="secondary_btn_bg_pressed">#757575</color>
+    <color name="separated_line_bg">#868686</color>
+    <color name="loading_bg">#dddddd</color>
 </resources>

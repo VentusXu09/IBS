@@ -144,6 +144,7 @@ public class DetailFragment extends Fragment {
         detailItems.add(new DetailItem("α", Double.toString(sample.getGm().getAlpha())));
         detailItems.add(new DetailItem("β", Double.toString(sample.getGm().getBeta())));
         detailItems.add(new DetailItem("γ", Double.toString(sample.getGm().getGamma())));
+        detailItems.add(new DetailItem("Magnetic Intensity", Float.toString(sample.getGm().getMagneticIntensity())));
         //Barometric
         detailItems.add(new DetailItem("", ""));
         detailItems.add(new DetailItem("[ Barometric ]", ""));

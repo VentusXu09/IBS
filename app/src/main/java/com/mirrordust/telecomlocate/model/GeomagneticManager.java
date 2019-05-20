@@ -23,6 +23,7 @@ public class GeomagneticManager {
     private final float[] mMagnetometerReading = new float[3];
     private final float[] mRotationMatrix = new float[9];
     private final float[] mOrientationAngles = new float[3];
+    private final float[] I = new float[9];
     private Context mContext;
     private SensorManager mSensorManager;
     private boolean mAccelero_flag = false;
@@ -59,12 +60,13 @@ public class GeomagneticManager {
     }
 
     public void updateOrientationAngles() {
-        SensorManager.getRotationMatrix(mRotationMatrix, null, mAccelerometerReading, mMagnetometerReading);
+        SensorManager.getRotationMatrix(mRotationMatrix, I, mAccelerometerReading, mMagnetometerReading);
+        float magneticIntensity = calMagneticIntensity();
         SensorManager.getOrientation(mRotationMatrix, mOrientationAngles);
-        measuring(mMagnetometerReading, mOrientationAngles);
+        measuring(mMagnetometerReading, mOrientationAngles, magneticIntensity);
     }
 
-    private void measuring(float[] geomag, float[] orientation) {
+    private void measuring(float[] geomag, float[] orientation, float magneticIntensity) {
         Geomagnetism geomagneticRecord = new Geomagnetism();
         geomagneticRecord.setX(geomag[0]);
         geomagneticRecord.setY(geomag[1]);
@@ -75,8 +77,17 @@ public class GeomagneticManager {
         geomagneticRecord.setBeta(orientation[1]);
         // roll
         geomagneticRecord.setGamma(orientation[2]);
+
+        geomagneticRecord.setMagneticIntensity(magneticIntensity);
         mSubscriber.onNext(geomagneticRecord);
         mSubscriber.onCompleted();
+    }
+
+    private float calMagneticIntensity() {
+        float intensity = (I[3]*mRotationMatrix[0]+I[4]*mRotationMatrix[3]+I[5]*mRotationMatrix[6])*mMagnetometerReading[0]+
+                (I[3]*mRotationMatrix[1]+I[4]*mRotationMatrix[4]+I[5]*mRotationMatrix[7])*mMagnetometerReading[1]+
+                (I[3]*mRotationMatrix[2]+I[4]*mRotationMatrix[5]+I[5]*mRotationMatrix[8])*mMagnetometerReading[2];
+        return intensity;
     }
 
     private void startListening() {

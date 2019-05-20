@@ -1,5 +1,6 @@
 package com.mirrordust.telecomlocate.util;
 
+import com.mirrordust.telecomlocate.entity.BaseStation;
 import com.mirrordust.telecomlocate.entity.LatLng;
 
 import java.lang.reflect.Field;
@@ -116,5 +117,9 @@ public class Utils {
                 break;
         }
         return dbm;
+    }
+
+    public static boolean isNearBaseStation(BaseStation baseStation) {
+        return (Integer.MAX_VALUE == baseStation.getLac() || Integer.MAX_VALUE == baseStation.getCid());
     }
 }

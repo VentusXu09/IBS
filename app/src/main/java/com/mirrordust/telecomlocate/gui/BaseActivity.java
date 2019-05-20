@@ -1,6 +1,7 @@
 package com.mirrordust.telecomlocate.gui;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.support.annotation.CallSuper;
 import android.support.annotation.IdRes;
@@ -28,6 +29,7 @@ import com.mirrordust.telecomlocate.activity.AboutActivity;
 import com.mirrordust.telecomlocate.activity.DataActivity;
 import com.mirrordust.telecomlocate.activity.SettingsActivity;
 import com.mirrordust.telecomlocate.util.PermissionHelper;
+import com.mirrordust.telecomlocate.util.UIUtils;
 
 public abstract class BaseActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
@@ -35,13 +37,13 @@ public abstract class BaseActivity extends AppCompatActivity
         BaseActivityListener,
         FragmentManager.OnBackStackChangedListener {
     private static final String TAG = "BaseActivity";
-    private FragmentController mFragmentController;
-    private Menu mMenu;
-    private CoordinatorLayout mCoordinatorLayout;
+    protected FragmentController mFragmentController;
+    protected Menu mMenu;
+    protected CoordinatorLayout mCoordinatorLayout;
 
     protected FrameLayout mMainContainer;
-    private BaseFragment mFragment;
-    private Toolbar mToolbar;
+    protected BaseFragment mFragment;
+    protected Toolbar mToolbar;
 
     // header type is pending on fragment setting, or defined by child class
     private HeaderType mHeaderType;
@@ -62,6 +64,12 @@ public abstract class BaseActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
+
+        //needed to reset correct header when user returns to app
+        BaseFragment frag = getCurrentFragment();
+        if (frag != null) {
+            updateHeader(frag.getHeaderType(), frag.getHeaderIconType());
+        }
     }
 
     @Override
@@ -75,24 +83,12 @@ public abstract class BaseActivity extends AppCompatActivity
     }
 
     private void initUI(@Nullable Bundle savedInstanceState) {
-//        mAppBarLayout = findViewById(R.id.app_bar_layout);
-//        mToolbar = findViewById(R.id.toolbar);
-//        mContainerUnderToolbar = findViewById(R.id.container_under_toolbar);
-//        mMainContainer = findViewById(R.id.sf_container);
-//        if (mToolbar != null) {
-//            setSupportActionBar(mToolbar);
-//            mToolbar.setPadding(0, getStatusBarHeight(), 0, 0);
-//        }
-//        mCoordinatorLayout = findViewById(R.id.coordinator_layout);
-//        mOfflineIndicator = findViewById(R.id.header_border_frame);
-//        SFFragment sfFragment = getInitialFragment();
-//        if (sfFragment != null && savedInstanceState == null) {
-//            installFragment(sfFragment, true);
-//        }
-        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mToolbar = findViewById(R.id.toolbar);
+        mCoordinatorLayout = findViewById(R.id.coordinator_layout);
         setSupportActionBar(mToolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            mToolbar.setPadding(0, getStatusBarHeight(), 0, 0);
         }
         mMainContainer = findViewById(R.id.tcl_container);
         BaseFragment baseFragment = getInitialFragment();
@@ -101,17 +97,25 @@ public abstract class BaseActivity extends AppCompatActivity
         }
     }
 
+    // A method to find height of the status bar
+    public int getStatusBarHeight() {
+        int result = 0;
+        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = getResources().getDimensionPixelSize(resourceId);
+        }
+        return result;
+    }
+
     private void setHeaderType(HeaderType headerType) {
         mHeaderType = headerType;
         updateHeader();
     }
 
     public void updateHeader(HeaderType headerType, HeaderIconType iconType){
-//        updateHeaderWithIconType(iconType);
+        updateHeaderWithIconType(iconType);
         setHeaderType(headerType);
     }
-
-
 
     protected void updateHeader() {
         if (getSupportActionBar() != null && mHeaderType != null) {
@@ -119,24 +123,34 @@ public abstract class BaseActivity extends AppCompatActivity
             mCoordinatorLayout.setVisibility(View.VISIBLE);
             mToolbar.setVisibility(View.VISIBLE);
             mMainContainer.setVisibility(View.VISIBLE);
-        }
-        switch (mHeaderType) {
-            case TITLE:
-                mCoordinatorLayout.setVisibility(View.VISIBLE);
-                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-                mToolbar.setVisibility(View.VISIBLE);
-                mMainContainer.setPadding(0, 0, 0, 0);
-                break;
-            case BLANK:
-                if (mToolbar != null) {
+
+            switch (mHeaderType) {
+                case TITLE:
+                    mCoordinatorLayout.setVisibility(View.VISIBLE);
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                    mToolbar.setVisibility(View.VISIBLE);
+                    mMainContainer.setPadding(0, 0, 0, 0);
+                    break;
+                case BLANK:
+                    if (mToolbar != null) {
+                        mToolbar.setVisibility(View.GONE);
+                    }
+                    break;
+                case BLANK_FITS_SYSTEM_WINDOW:
+                    setTitle(null);
                     mToolbar.setVisibility(View.GONE);
-                }
-                break;
-            case BLANK_FITS_SYSTEM_WINDOW:
-                setTitle(null);
-                mToolbar.setVisibility(View.GONE);
-                mMainContainer.setPadding(0, 0, 0, 0);
-                break;
+                    mMainContainer.setPadding(0, 0, 0, 0);
+                    break;
+            }
+        }
+
+    }
+
+    private void updateHeaderWithIconType(HeaderIconType iconType) {
+        if (getSupportActionBar() != null && mToolbar != null) {
+            int color = Color.parseColor("#CAE4FB");
+            int iconId = iconType.getIcon();
+            UIUtils.setToolbarBackIcon(mToolbar, iconId, color, PorterDuff.Mode.SRC_ATOP);
         }
     }
 

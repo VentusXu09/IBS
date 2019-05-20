@@ -24,9 +24,9 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.GalleryActivity"
-            android:label="@string/activity_label_gallery"
-            android:theme="@style/AppTheme.NoActionBar.DarkStatusBar"/>
+        <activity
+            android:name=".activity.GalleryActivity"
+            android:theme="@style/Theme.MaterialDesign"/>
         <activity
             android:name=".activity.SampleActivity"
             android:label="@string/app_name"
@@ -56,6 +56,12 @@
             android:name=".activity.AboutActivity"
             android:label="@string/activity_label_about"
             android:theme="@style/AppTheme.NoActionBar.DarkStatusBar" />
+        <activity
+            android:name=".activity.RecordActivity"
+            android:theme="@style/Theme.MaterialDesign">
+
+        </activity>
+
 
         <service
             android:name=".service.SampleService"

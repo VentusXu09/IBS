@@ -23,6 +23,7 @@ import io.realm.RealmResults;
 public class SamplePresenter implements SampleContract.Presenter, OnAddOrUpdateSampleListener {
 
     private boolean mRecording = false;
+    private boolean isInitializing = false;
     private Realm mRealm;
     private String mMode;
     private SampleContract.View mSampleView;
@@ -71,7 +72,9 @@ public class SamplePresenter implements SampleContract.Presenter, OnAddOrUpdateS
 
     @Override
     public void onResume() {
-        if (isRecording()) {
+        if (isInitializing) {
+            mSampleView.setActivityTitle("Initializing...");
+        }else if (isRecording()) {
             mSampleView.setActivityTitle("Recording...");
         } else {
             mSampleView.setActivityTitle("TelecomLocate");
@@ -100,9 +103,10 @@ public class SamplePresenter implements SampleContract.Presenter, OnAddOrUpdateS
 
     @Override
     public void stopSampling() {
-        if (isRecording()) {
+        if (isRecording() || isInitializing) {
             mSampleService.stopCollecting();
             mRecording = false;
+            isInitializing = false;
             mSampleView.setActivityTitle("TelecomLocate");
             mSampleView.setFabIconSampling(false);
             displayMainView();
@@ -172,8 +176,8 @@ public class SamplePresenter implements SampleContract.Presenter, OnAddOrUpdateS
             mSampleService.setMode(mMode);
             mSampleService.setFloor(floor);
             mSampleService.startCollecting();
-            mRecording = true;
-            mSampleView.setActivityTitle("Recording...");
+            isInitializing = true;
+            mSampleView.setActivityTitle("Initializing...");
             mSampleView.setFabIconSampling(true);
         } else {
             mSampleService.setMode(mMode);
@@ -183,6 +187,8 @@ public class SamplePresenter implements SampleContract.Presenter, OnAddOrUpdateS
 
     @Override
     public void onAddOrUpdateSample() {
+        isInitializing = false;
+        mRecording = true;
         mSampleView.addSample();
     }
 }

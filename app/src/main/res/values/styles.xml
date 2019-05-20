@@ -25,4 +25,57 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="Theme.TCLNew" parent="android:Theme.Holo.Light">
+        <item name="android:windowNoTitle">false</item>
+        <item name="android:windowActionBar">true</item>
+        <item name="android:actionBarStyle">@style/SFActionBarStyle</item>
+        <item name="button_primary">@drawable/btn_primary_bg</item>
+        <item name="button_secondary">@drawable/btn_secondary_bg</item>
+        <item name="android:textViewStyle">@style/AragornTextLight</item>
+        <item name="android:windowDisablePreview">true</item>
+        <item name="colorError">@color/red</item>
+    </style>
+
+    <style name="SFActionBarStyle" parent="android:style/Widget.Holo.Light.ActionBar">
+        <item name="android:displayOptions">homeAsUp|showHome|showTitle</item>
+    </style>
+
+    <style name="ToolBar" parent="@style/Theme.TCLNew">
+        <item name="android:textColorPrimary">@color/primary_color</item>
+        <item name="android:textColorSecondary">@color/primary_color</item>
+        <item name="android:textAppearance">@style/Title</item>
+    </style>
+
+    <style name="Title" parent="AragornText">
+        <item name="android:textSize">@dimen/font_title_size</item>
+        <item name="android:lineSpacingExtra">12sp</item>
+    </style>
+
+    <style name="AragornText" parent="@android:style/Widget.TextView">
+        <item name="android:fontFamily">@font/font_72_regular</item>
+    </style>
+
+    <style name="AragornTextLight" parent="@android:style/Widget.TextView">
+        <item name="android:fontFamily">@font/font_72_regular</item>
+    </style>
+
+    <!-- Style for coordinate layout -->
+    <style name="ThemeCompat.SFNew" parent="Theme.AppCompat.Light">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:actionBarStyle">@style/SFActionBarStyle</item>
+        <item name="button_primary">@drawable/btn_primary_bg</item>
+        <item name="button_secondary">@drawable/btn_secondary_bg</item>
+        <item name="android:textViewStyle">@style/AragornTextLight</item>
+        <item name="android:windowDisablePreview">true</item>
+        <item name="colorError">@color/red</item>
+    </style>
+
+    <style name="Theme.MaterialDesign" parent="ThemeCompat.SFNew">
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="windowNoTitle">true</item>
+    </style>
 </resources>

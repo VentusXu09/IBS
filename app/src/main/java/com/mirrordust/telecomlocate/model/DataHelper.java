@@ -244,15 +244,15 @@ public class DataHelper {
 
     public static boolean isEmptySample(Sample sample) {
         //TODO: more precise check mehtod
-        return sample.getLatLng().isEmpty();
+        return null == sample || null == sample.getLatLng() || sample.getLatLng().isEmpty();
     }
 
-    public static MutableLiveData<List<Point>> getPointsWithIndex(Realm realm, long index) {
-        MutableLiveData<List<Point>> pointLiveData = new MutableLiveData<>();
-        List<Point> result = new ArrayList<>();
+    public static MutableLiveData<List<Sample>> getPointsWithIndex(Realm realm, long index) {
+        MutableLiveData<List<Sample>> pointLiveData = new MutableLiveData<>();
+        List<Sample> result = new ArrayList<>();
         final RealmResults<Sample> samples = getSamplesByIndex(realm, index);
         for (Sample sample : samples) {
-            result.add(Point.fromLngLat(sample.getLatLng().getLongitude(), sample.getLatLng().getLatitude(), sample.getLatLng().getAltitude()));
+            result.add(sample);
         }
         pointLiveData.setValue(result);
         return pointLiveData;
