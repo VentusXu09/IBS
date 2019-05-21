@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.mirrordust.telecomlocate.activity.AboutActivity"
+    tools:context="com.ventus.ibs.gui.about.AboutActivity"
     tools:showIn="@layout/activity_about">
 
 </android.support.constraint.ConstraintLayout>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.mirrordust.telecomlocate">
+    package="com.ventus.ibs">
 
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
@@ -18,17 +18,17 @@
     <!--<uses-permission android:name="android.permission.OBSERVE_GRANT_REVOKE_PERMISSIONS"/>-->
 
     <application
-        android:name=".app.TelecomLocate"
+        android:name="com.ventus.ibs.app.IBS"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".activity.GalleryActivity"
+            android:name="com.ventus.ibs.gui.gallery.GalleryActivity"
             android:theme="@style/Theme.MaterialDesign"/>
         <activity
-            android:name=".activity.SampleActivity"
+            android:name="com.ventus.ibs.gui.sample.SampleActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar.TransparentStatusBar">
             <intent-filter>
@@ -38,33 +38,33 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.SampleDetailActivity"
+            android:name="com.ventus.ibs.gui.sample.sampledetail.SampleDetailActivity"
             android:label="@string/activity_label_detail"
             android:theme="@style/AppTheme.NoActionBar.DarkStatusBar" />
         <activity
-            android:name=".activity.DataActivity"
+            android:name="com.ventus.ibs.gui.data.DataActivity"
             android:label="@string/activity_label_data"
             android:theme="@style/AppTheme.NoActionBar.DarkStatusBar" />
         <activity
-            android:name=".activity.PredictionActivity"
+            android:name="com.ventus.ibs.gui.prediction.PredictionActivity"
             android:label="@string/activity_label_prediction"
             android:theme="@style/AppTheme.NoActionBar.DarkStatusBar" />
         <activity
-            android:name=".activity.SettingsActivity"
+            android:name="com.ventus.ibs.gui.about.SettingsActivity"
             android:label="@string/activity_label_settings" />
         <activity
-            android:name=".activity.AboutActivity"
+            android:name="com.ventus.ibs.gui.about.AboutActivity"
             android:label="@string/activity_label_about"
             android:theme="@style/AppTheme.NoActionBar.DarkStatusBar" />
         <activity
-            android:name=".activity.RecordActivity"
+            android:name="com.ventus.ibs.gui.record.RecordActivity"
             android:theme="@style/Theme.MaterialDesign">
 
         </activity>
 
 
         <service
-            android:name=".service.SampleService"
+            android:name="com.ventus.ibs.service.SampleService"
             android:enabled="true"
             android:exported="true" />
     </application>

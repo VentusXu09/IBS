@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">TelecomLocate</string>
+    <string name="app_name">IBS</string>
 
     <string name="go_to_settings">Go to settings</string>
     <string name="cancel">Cancel</string>
@@ -8,7 +8,7 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="drawer_image_description">Base Station</string>
-    <string name="drawer_description_head">TelecomLocate</string>
+    <string name="drawer_description_head">IBS</string>
     <string name="drawer_description_snippet">Sensor Reading Collector</string>
     <string name="nav_test">Test availability</string>
     <string name="nav_data">Data Management</string>

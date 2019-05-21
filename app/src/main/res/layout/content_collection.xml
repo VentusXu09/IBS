@@ -7,7 +7,7 @@
     android:background="@color/collectionActivityBackground"
     android:orientation="horizontal"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.mirrordust.telecomlocate.activity.SampleActivity"
+    tools:context="com.ventus.ibs.gui.sample.SampleActivity"
     tools:showIn="@layout/activity_collection">
 
     <android.support.v7.widget.RecyclerView

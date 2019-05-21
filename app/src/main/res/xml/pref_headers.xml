@@ -3,17 +3,17 @@
     <!-- These settings headers are only used on tablets. -->
 
     <header
-        android:fragment="com.mirrordust.telecomlocate.activity.SettingsActivity$SamplePreferenceFragment"
+        android:fragment="com.ventus.ibs.gui.about.SettingsActivity$SamplePreferenceFragment"
         android:icon="@drawable/ic_pref_collection"
         android:title="@string/pref_header_sample" />
 
     <header
-        android:fragment="com.mirrordust.telecomlocate.activity.SettingsActivity$DataPreferenceFragment"
+        android:fragment="com.ventus.ibs.gui.about.SettingsActivity$DataPreferenceFragment"
         android:icon="@drawable/ic_pref_data"
         android:title="@string/pref_header_data" />
 
     <header
-        android:fragment="com.mirrordust.telecomlocate.activity.SettingsActivity$PredictionPreferenceFragment"
+        android:fragment="com.ventus.ibs.gui.about.SettingsActivity$PredictionPreferenceFragment"
         android:icon="@drawable/ic_pref_prediction"
         android:title="@string/pref_header_prediction" />
 

@@ -9,7 +9,7 @@
 
         <variable
             name="viewModel"
-            type="com.mirrordust.telecomlocate.viewmodel.GalleryViewModel" />
+            type="com.ventus.ibs.viewmodel.GalleryViewModel" />
 
     </data>
     <LinearLayout
@@ -17,7 +17,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:weightSum="2"
-        tools:context=".fragment.GalleryFragment">
+        tools:context=".gui.gallery.GalleryFragment">
 
         <LinearLayout
             android:layout_width="match_parent"
