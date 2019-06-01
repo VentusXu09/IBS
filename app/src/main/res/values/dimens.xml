@@ -22,4 +22,6 @@
     <dimen name="font_body_size">14sp</dimen>
     <dimen name="font_caption_size">12sp</dimen>
     <dimen name="font_button_size">14sp</dimen>
+
+    <dimen name="action_button_margin">13dp</dimen>
 </resources>

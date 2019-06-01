@@ -117,7 +117,7 @@ public class BaseStationManager {
             CellSignalStrengthCdma cellSignalStrengthCdma = cellInfoCdma.getCellSignalStrength();
             if (null == cellSignalStrengthCdma) {
                 baseStation = BaseStation.newInstance(mcc, mnc, cellIdentityCdma.getNetworkId(), cellIdentityCdma.getBasestationId(),
-                        cellIdentityCdma.getNetworkId(), cellIdentityCdma.getBasestationId(), cellIdentityCdma.getLongitude(), cellIdentityCdma.getLatitude(),
+                        cellIdentityCdma.getSystemId(), cellIdentityCdma.getBasestationId(), cellIdentityCdma.getLongitude(), cellIdentityCdma.getLatitude(),
                         Constants.BaseStationType.CDMA.getValue());
             } else {
                 baseStation = BaseStation.newInstance(mcc, mnc, cellIdentityCdma.getNetworkId(), cellIdentityCdma.getBasestationId(),

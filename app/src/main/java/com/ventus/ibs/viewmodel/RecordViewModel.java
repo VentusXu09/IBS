@@ -5,11 +5,16 @@ import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Transformations;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.databinding.ObservableArrayList;
 import android.databinding.ObservableField;
 import android.databinding.ObservableList;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.os.IBinder;
 import android.support.annotation.NonNull;
 
 import com.github.mikephil.charting.components.YAxis;
@@ -18,40 +23,50 @@ import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.ventus.ibs.R;
+import com.ventus.ibs.binding.SingleLiveEvent;
 import com.ventus.ibs.entity.BaseStation;
 import com.ventus.ibs.entity.Geomagnetism;
 import com.ventus.ibs.entity.Sample;
+import com.ventus.ibs.gui.interf.OnAddOrUpdateSampleListener;
+import com.ventus.ibs.gui.record.RecordInterface;
 import com.ventus.ibs.model.DataHelper;
+import com.ventus.ibs.service.RecordService;
 import com.ventus.ibs.util.Constants;
 import com.ventus.ibs.util.Utils;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
 import io.realm.Realm;
+import io.realm.RealmResults;
 
 /**
- * Created by ventus0905 on 04/12/2019
+ * Created by ventus0905 on 06/01/2019
  */
-public class GalleryViewModel extends AndroidViewModel {
+public class RecordViewModel extends AndroidViewModel implements RecordInterface.RecordViewModelAction, OnAddOrUpdateSampleListener {
     //UI Observer
     private final ObservableList<Sample> pointList = new ObservableArrayList<>();
     private final ObservableField<LineData> lineData = new ObservableField<>();
     private final ObservableField<Drawable> smarker = new ObservableField<>();
     private final ObservableField<Drawable> emarker = new ObservableField<>();
-    private final LiveData<String> title;
+    private final MutableLiveData<String> title = new MutableLiveData<>();
 
     //LiveData
     private final LiveData<List<Sample>> pointListLiveData;
     private final MutableLiveData<TriggerIndex> trigger = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> fabIconSampling = new MutableLiveData<>();
+    private final SingleLiveEvent showControlPanel = new SingleLiveEvent();
 
-    //Events
+    //Service
+    private RecordService mSampleService;
 
     //realm
     private Realm mRealm;
+
+    private boolean isRecording = false;
+    private boolean isInitializing = false;
+    private boolean mBound = false;
+    private String mMode;
 
     private long index;
 
@@ -61,46 +76,194 @@ public class GalleryViewModel extends AndroidViewModel {
 
     private Drawable startMarker = getApplication().getResources().getDrawable(R.drawable.marker_64dp, null);
     private Drawable endMarker = getApplication().getResources().getDrawable(R.drawable.checkered_flag_64dp, null);
-    private HashMap<String, Integer> colorDict = new HashMap<>();
 
-    public GalleryViewModel(@NonNull Application application) {
+    private ServiceConnection mConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+            RecordService.LocalBinder binder = (RecordService.LocalBinder) iBinder;
+            mSampleService = binder.getService();
+            mBound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName componentName) {
+            mBound = false;
+        }
+    };
+
+    public RecordViewModel(@NonNull Application application) {
         super(application);
         mRealm = Realm.getDefaultInstance();
         pointListLiveData = Transformations.switchMap(trigger, (points) -> {
             if (null == mRealm) {
                 return null;
             }
-            return DataHelper.getPointsWithIndex(mRealm, trigger.getValue().getIndex());
+            return getNewSample();
         });
-        title = Transformations.switchMap(trigger, (s) -> {
-            if (null == mRealm) {
-                return null;
-            }
-            return DataHelper.getDataSetName(mRealm, trigger.getValue().getIndex());
-        });
+
     }
 
     public void start() {
         trigger.setValue(new TriggerIndex(index));
+        title.setValue("Record");
     }
 
-    public void init(long index) {
-        this.index = index;
+    @Override
+    public void bindService(Context context) {
+        Intent intent = new Intent(context, RecordService.class);
+        context.bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+        mBound = true;
     }
 
+    @Override
+    public void unBindService(Context context) {
+        if (mBound) {
+            mSampleService.stopForeground(true);
+            context.unbindService(mConnection);
+            mBound = false;
+        }
+    }
+
+    @Override
+    public void addOrUpdateSample(Sample sample) {
+        DataHelper.addOrUpdateSampleAsync(mRealm, sample, this);
+    }
+
+//    private void displayMainView() {
+//        mSampleView.switchMainView(hasNewSample());
+//    }
+
+    @Override
+    public void subscribe() {
+        mRealm = Realm.getDefaultInstance();
+    }
+
+    @Override
+    public void unsubscribe() {
+        mRealm.close();
+    }
+
+    @Override
+    public void stopSampling() {
+        if (isRecording || isInitializing) {
+            mSampleService.stopCollecting();
+            isRecording = false;
+            isInitializing = false;
+            //TODO: View logic
+            title.setValue("IBS");
+            fabIconSampling.setValue(false);
+//            mSampleView.setActivityTitle("IBS");
+//            mSampleView.setFabIconSampling(false);
+//            displayMainView();
+        }
+    }
+
+    @Override
+    public void saveNewData(String dataSetName) {
+        //get the next index for new dataset
+        long maxIdx = DataHelper.getMaxDataSetIndex(mRealm);
+        long nextIdx = maxIdx + 1;
+        DataHelper.saveNewSamples(mRealm, nextIdx, dataSetName);
+//        displayMainView();
+    }
+
+    @Override
+    public void discardNewData() {
+        DataHelper.deleteSamples(mRealm, 0);
+        pointList.clear();
+        lineData.set(new LineData());
+//        displayMainView();
+    }
+
+    @Override
+    public boolean hasNewSample() {
+        return getNewSample().getValue().size() != 0;
+    }
+
+    @Override
+    public MutableLiveData<List<Sample>> getNewSample() {
+        MutableLiveData<List<Sample>> pointLiveData = new MutableLiveData<>();
+        List<Sample> result = new ArrayList<>();
+        final RealmResults<Sample> samples =mRealm.where(Sample.class)
+                .equalTo("index", 0)
+                .findAll();
+        for (Sample sample : samples) {
+            result.add(sample);
+        }
+        pointLiveData.setValue(result);
+        return pointLiveData;
+    }
+
+    @Override
+    public void onFabClick() {
+        showControlPanel.call();
+//        mSampleView.showControlPanel();
+//        if (isRecording()) {
+//            mSampleView.showConfirmStopDialog();
+//        } else {
+//            mSampleView.checkPermission();
+//        }
+    }
+
+
+    @Override
+    public void startSampling(String mode, Context context) {
+        startSampling(mode, 1, context);
+    }
+
+    @Override
+    public void startSampling(String mode, int floor, Context context) {
+        mMode = mode;
+
+        if (!isRecording) {
+            //TODO: view logic
+//            mSampleView.switchMainView(true);
+//
+            if (!mSampleService.isRecordManagerInitialized()) {
+                mSampleService.setRecordManager(context);
+            }
+            if (!mSampleService.isRecordViewModelInitialized()) {
+                mSampleService.setViewModel(this);
+            }
+            mSampleService.setMode(mMode);
+            mSampleService.setFloor(floor);
+            mSampleService.startCollecting();
+            isInitializing = true;
+            title.setValue("Initializing...");
+            fabIconSampling.setValue(true);
+//            mSampleView.setActivityTitle("Initializing...");
+//            mSampleView.setFabIconSampling(true);
+        } else {
+            mSampleService.setMode(mMode);
+            mSampleService.setFloor(floor);
+        }
+    }
+
+    @Override
+    public void onAddOrUpdateSample() {
+        //In case too frequent recording
+        if (!isRecording && !isInitializing) return;
+        isInitializing = false;
+        isRecording = true;
+        //TODO : view logic
+        title.setValue("Recording");
+        trigger.setValue(new TriggerIndex(0));
+//        mSampleView.setActivityTitle("Recording...");
+//        mSampleView.addSample();
+    }
+
+
+    //Map
     public void updateMapPoints(List<Sample> points) {
         pointList.clear();
         pointList.addAll(points);
     }
 
-    public void showDefatult() {
+    public void showDefault() {
 
     }
 
-    private float getRandom(float range, float start) {
-        return (float) (Math.random() * range) + start;
-    }
-
+    //Line Chart
     public void generateLinePoints(List<Sample> samples) {
         List<Entry> entries2G = new ArrayList<>();
         List<Entry> entries4G = new ArrayList<>();
@@ -152,8 +315,7 @@ public class GalleryViewModel extends AndroidViewModel {
         data.setValueTextSize(9f);
 
         lineData.set(data);
-        smarker.set(startMarker);
-        emarker.set(endMarker);
+        emarker.set(startMarker);
     }
 
     private LineDataSet generateLineDataSet(List<Entry> entries, String label, int index) {
@@ -171,67 +333,6 @@ public class GalleryViewModel extends AndroidViewModel {
         return set;
     }
 
-    private List<Float> getAbruptPeriodSignal(List<Entry> entries) {
-        List<Float> changedPoints = new ArrayList<>();
-        float dataGap = SIGNAL_STRENGTH_GAP;
-        for (int i = 3; i < entries.size(); i++) {
-            Entry entry1 = entries.get(i);
-            Entry entry2 = entries.get(i-3);
-            if (Math.abs(entry1.getY() - entry2.getY()) > dataGap) {
-                changedPoints.add(entry1.getX());
-                changedPoints.add(entries.get(i-2).getX());
-                changedPoints.add(entries.get(i-1).getX());
-            }
-        }
-        return changedPoints;
-    }
-
-    private List<Float> getAbruptPeriodMagnetic(List<Entry> entries, boolean isMore) {
-        List<Float> abruptPoints = new ArrayList<>();
-        float dataGap = isMore ? MAGNETIC_STRENGTH_GAP : -MAGNETIC_STRENGTH_GAP;
-        for (int i = 3; i < entries.size(); i++) {
-            Entry entry1 = entries.get(i);
-            Entry entry2 = entries.get(i-3);
-            if (isMore && entry1.getY() - entry2.getY() > dataGap) {
-                abruptPoints.add(entry1.getX());
-                abruptPoints.add(entries.get(i-2).getX());
-                abruptPoints.add(entries.get(i-1).getX());
-            } else if (!isMore && entry1.getY() - entry2.getY() < dataGap) {
-                abruptPoints.add(entry1.getX());
-                abruptPoints.add(entry1.getX());
-                abruptPoints.add(entries.get(i-2).getX());
-                abruptPoints.add(entries.get(i-1).getX());
-            }
-        }
-        return abruptPoints;
-    }
-
-    private List<Float> judgeIOSwitch(List<Float> signals2G, List<Float> signals4G, List<Float> magnetics) {
-        List<Float> signals = signals2G;
-        signals.addAll(signals4G);
-        Collections.sort(signals2G);
-        signals.retainAll(magnetics);
-        Iterator<Float> iterator = signals.iterator();
-        if (iterator.hasNext()) {
-            Float f1 = iterator.next();
-            Float f2;
-            while (iterator.hasNext()) {
-                f2 = iterator.next();
-                if (f2 - f1 <= TIME_GAP * 3) {
-                    iterator.remove();
-                }
-                f1 = f2;
-            }
-        }
-
-//        for (int i = 1; i<signals.size(); i++) {
-//            if (signals.get(i) - signals.get(i-1) <= TIME_GAP*3) {
-//                signals.remove(i-1);
-//            }
-//        }
-        return signals;
-    }
-
     private LineData addSwitchLineToChart(List<Float> signals, LineData data, int index) {
         for (Float signal : signals) {
             List<Entry> entries = new ArrayList<>();
@@ -240,10 +341,6 @@ public class GalleryViewModel extends AndroidViewModel {
             data.addDataSet(generateLineDataSet(entries, "", index));
         }
         return data;
-    }
-
-    public boolean onBackPressed() {
-        return false;
     }
 
     //Getter and Setter
@@ -273,5 +370,13 @@ public class GalleryViewModel extends AndroidViewModel {
 
     public ObservableField<Drawable> getEmarker() {
         return emarker;
+    }
+
+    public SingleLiveEvent getShowControlPanel() {
+        return showControlPanel;
+    }
+
+    public MutableLiveData<Boolean> getFabIconSampling() {
+        return fabIconSampling;
     }
 }

@@ -242,7 +242,6 @@ public class DataHelper {
     }
 
     public static boolean isEmptySample(Sample sample) {
-        //TODO: more precise check mehtod
         return null == sample || null == sample.getLatLng() || sample.getLatLng().isEmpty();
     }
 

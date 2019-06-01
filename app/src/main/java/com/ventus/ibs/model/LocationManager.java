@@ -161,7 +161,7 @@ public class LocationManager {
     protected Location getBestLocation(Location location,
                                        Location currentBestLocation) {
         if (currentBestLocation == null) {
-            //check whether the first location is fresh
+            //check whether the first location is fresh data
             long timeDelta = location.getElapsedRealtimeNanos() - SystemClock.elapsedRealtimeNanos();
             boolean isSignificantlyOlder = timeDelta < -TWO_MINUTES;
             if (isSignificantlyOlder) {
@@ -192,7 +192,8 @@ public class LocationManager {
         boolean isMoreAccurate = accuracyDelta < 0;
         boolean isSignificantlyLessAccurate = accuracyDelta > 200;
         // Check if the old and new location are from the same provider
-        boolean isFromSameProvider = location.getProvider().equalsIgnoreCase(currentBestLocation.getProvider());
+        boolean isFromSameProvider = location.getProvider()
+                .equalsIgnoreCase(currentBestLocation.getProvider());
         // Determine location quality using a combination of timeliness and
         // accuracy
         if (isMoreAccurate) {

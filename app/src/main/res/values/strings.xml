@@ -96,4 +96,8 @@
         <item>Train</item>
     </string-array>
 
+    <string name="permission_message">To use this feature, you need to allow IBS to access your %s. You can update this permission in Settings.</string>
+    <string name="camera">camera</string>
+    <string name="storage">storage</string>
+
 </resources>

@@ -346,8 +346,8 @@ public abstract class BaseActivity extends AppCompatActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (getCurrentFragment() instanceof TCLBaseFragment) {
-            ((TCLBaseFragment) getCurrentFragment()).onActivityResult(requestCode, resultCode, data);
+        if (getCurrentFragment() instanceof IBSBaseFragment) {
+            ((IBSBaseFragment) getCurrentFragment()).onActivityResult(requestCode, resultCode, data);
         }
     }
 }

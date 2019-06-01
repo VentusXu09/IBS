@@ -28,7 +28,9 @@
                 android:id="@+id/mapView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:mapstyle="@{viewModel.pointList}"/>
+                app:mapstyle="@{viewModel.pointList}"
+                app:startmarker="@{viewModel.smarker}"
+                app:endmarker="@{viewModel.emarker}"/>
         </LinearLayout>
 
         <LinearLayout

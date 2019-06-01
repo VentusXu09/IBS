@@ -16,7 +16,6 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.utils.ColorTemplate;
@@ -25,7 +24,7 @@ import com.mapbox.mapboxsdk.maps.MapView;
 import com.ventus.ibs.R;
 import com.ventus.ibs.databinding.FragmentGalleryBinding;
 import com.ventus.ibs.entity.Sample;
-import com.ventus.ibs.gui.TCLBaseFragment;
+import com.ventus.ibs.gui.IBSBaseFragment;
 import com.ventus.ibs.util.Constants;
 import com.ventus.ibs.util.StringUtils;
 import com.ventus.ibs.viewmodel.GalleryViewModel;
@@ -35,7 +34,7 @@ import java.util.List;
 /**
  * Created by ventus0905 on 04/12/2019
  */
-public class GalleryFragment extends TCLBaseFragment implements SeekBar.OnSeekBarChangeListener {
+public class GalleryFragment extends IBSBaseFragment implements SeekBar.OnSeekBarChangeListener {
     private static final String TAG = "GalleryFragment";
 
     private GalleryViewModel mViewModel;
@@ -147,10 +146,6 @@ public class GalleryFragment extends TCLBaseFragment implements SeekBar.OnSeekBa
         // add data
         seekBarX.setProgress(100);
 
-        // get the legend (only possible after setting data)
-        Legend l = lineChart.getLegend();
-        l.setEnabled(false);
-
         XAxis xAxis = lineChart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.TOP_INSIDE);
         xAxis.setTypeface(tfLight);
@@ -233,7 +228,7 @@ public class GalleryFragment extends TCLBaseFragment implements SeekBar.OnSeekBa
 //        setData(seekBarX.getProgress(), 50);
 
         // redraw
-        lineChart.invalidate();
+//        lineChart.invalidate();
     }
 
 

@@ -37,6 +37,8 @@ public class ViewModelFactory extends ViewModelProvider.NewInstanceFactory {
         if (modelClass.isAssignableFrom(GalleryViewModel.class)) {
             //noinspection unchecked
             return (T) new GalleryViewModel(mApplication);
+        } else if (modelClass.isAssignableFrom(RecordViewModel.class)) {
+            return (T) new RecordViewModel(mApplication);
         }
         throw new IllegalArgumentException("Unknown ViewModel class: " + modelClass.getName());
     }

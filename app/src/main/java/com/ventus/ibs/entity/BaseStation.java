@@ -25,7 +25,7 @@ public class BaseStation extends RealmObject {
     }
 
     public static BaseStation newInstance(int mcc, int mnc, int lac, int cid, int arfcn, int bsic_psc_pci, double lon, double lat, String type) {
-        return newInstance(mcc, mnc, lac, cid, arfcn, bsic_psc_pci, lon, lat, -999,-999,-999, type);
+        return newInstance(mcc, mnc, lac, cid, arfcn, bsic_psc_pci, lon, lat, 99,0,-999, type);
     }
 
     public static BaseStation emptyInstance() {

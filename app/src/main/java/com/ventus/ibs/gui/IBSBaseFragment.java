@@ -21,8 +21,8 @@ import com.ventus.ibs.util.PermissionHelper;
 /**
  * Created by ventus0905 on 04/14/2019
  */
-public abstract class TCLBaseFragment extends ViewLifeCycleFragment implements BaseFragment, PermissionHelper.PermissionListener {
-    private static final String TAG = "TCLBaseFragment";
+public abstract class IBSBaseFragment extends ViewLifeCycleFragment implements BaseFragment, PermissionHelper.PermissionListener {
+    private static final String TAG = "IBSBaseFragment";
     protected static final String FRAGMENT_TOOLBAR_ICON = "FRAGMENT_TOOLBAR_ICON";
     private View mContentView;
     private Menu mMenu;
