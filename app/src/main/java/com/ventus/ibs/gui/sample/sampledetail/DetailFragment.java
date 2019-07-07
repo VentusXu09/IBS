@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.ventus.ibs.R;
+import com.ventus.ibs.entity.Wifi;
 import com.ventus.ibs.gui.sample.sampledetail.SampleDetailActivity;
 import com.ventus.ibs.gui.sample.sampledetail.SampleDetailAdapter;
 import com.ventus.ibs.entity.BaseStation;
@@ -149,6 +150,16 @@ public class DetailFragment extends Fragment {
         detailItems.add(new DetailItem("", ""));
         detailItems.add(new DetailItem("[ Barometric ]", ""));
         detailItems.add(new DetailItem("pressure", Double.toString(sample.getBaro().getPressure())));
+        //Wifi
+        detailItems.add(new DetailItem("", ""));
+        detailItems.add(new DetailItem("[Wifi ]", ""));
+        for (int i = 0; i < sample.getWifiList().size(); i++) {
+            Wifi wifi = sample.getWifiList().get(i);
+            detailItems.add(new DetailItem(String.format("# %s ---------", i + 1), ""));
+            detailItems.add(new DetailItem("bssid", wifi.getBssid()));
+            detailItems.add(new DetailItem("ssid", wifi.getSsid()));
+            detailItems.add(new DetailItem("level", String.valueOf(wifi.getStrength())));
+        }
         //extra label
         detailItems.add(new DetailItem("", ""));
         detailItems.add(new DetailItem("[Extra Labels]", ""));

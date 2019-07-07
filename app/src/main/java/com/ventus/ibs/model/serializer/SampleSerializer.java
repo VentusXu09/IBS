@@ -6,6 +6,7 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import com.ventus.ibs.entity.BaseStation;
 import com.ventus.ibs.entity.Sample;
+import com.ventus.ibs.entity.Wifi;
 
 import java.lang.reflect.Type;
 import java.util.List;
@@ -44,7 +45,13 @@ public class SampleSerializer implements JsonSerializer<Sample> {
             jsonObject.addProperty("signalLevel_" + i, baseStation.getSignalLevel());
             jsonObject.addProperty("type_" + i, baseStation.getType());
             jsonObject.addProperty("Dbm_" + i, baseStation.getDbm());
-
+        }
+        List<Wifi> wifiList = src.getWifiList();
+        for (int i = 0; i< wifiList.size(); i++) {
+            Wifi wifi = wifiList.get(i);
+            jsonObject.addProperty("bssid_" + i, wifi.getBssid());
+            jsonObject.addProperty("ssid_" + i, wifi.getSsid());
+            jsonObject.addProperty("level_" + i, wifi.getStrength());
         }
         jsonObject.add("Signal", context.serialize(src.getSignal()));
         jsonObject.add("Geomagnetic", context.serialize(src.getGm()));

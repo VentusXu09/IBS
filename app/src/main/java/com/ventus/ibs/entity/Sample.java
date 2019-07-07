@@ -45,6 +45,8 @@ public class Sample extends RealmObject {
 
     private Barometric baro;                // barometric pressure
 
+    private RealmList<Wifi> wifiList;       // wifi list get from WifiManager.getScanResult()
+
     public Sample() {
         mID = UUID.randomUUID().toString();
         time = System.currentTimeMillis();
@@ -149,6 +151,14 @@ public class Sample extends RealmObject {
 
     public void setBaro(Barometric baro) {
         this.baro = baro;
+    }
+
+    public RealmList<Wifi> getWifiList() {
+        return wifiList;
+    }
+
+    public void setWifiList(RealmList<Wifi> wifiList) {
+        this.wifiList = wifiList;
     }
 
     @Override

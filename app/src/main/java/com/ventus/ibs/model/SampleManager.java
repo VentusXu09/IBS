@@ -4,13 +4,7 @@ import android.content.Context;
 import android.location.Location;
 import android.util.Log;
 
-import com.ventus.ibs.entity.Barometric;
-import com.ventus.ibs.entity.BaseStation;
-import com.ventus.ibs.entity.Battery;
-import com.ventus.ibs.entity.Geomagnetism;
-import com.ventus.ibs.entity.LatLng;
-import com.ventus.ibs.entity.Sample;
-import com.ventus.ibs.entity.Signal;
+import com.ventus.ibs.entity.*;
 
 import java.util.List;
 
@@ -18,6 +12,7 @@ import io.realm.RealmList;
 import rx.Observable;
 import rx.functions.Func4;
 import rx.functions.Func6;
+import rx.functions.Func7;
 
 /**
  * Created by LiaoShanhe on 2017/07/18/018.
@@ -32,6 +27,7 @@ public class SampleManager {
     private BatteryManager mBatteryManager;
     private GeomagneticManager mGeomagneticManager;
     private BarometricManager mBarometricManager;
+    private WifiManager mWifiManager;
     private Context mContext;
 
     public SampleManager(Context context) {
@@ -43,6 +39,7 @@ public class SampleManager {
         mBatteryManager = new BatteryManager(mContext);
         mGeomagneticManager = new GeomagneticManager(mContext);
         mBarometricManager = new BarometricManager(mContext);
+        mWifiManager = new WifiManager(mContext);
     }
 
     public Observable<Sample> fetchRecord() {
@@ -52,9 +49,10 @@ public class SampleManager {
                 mBatteryManager.getBatteryLevel(),
                 mGeomagneticManager.getGeomagneticInfo(),
                 mBarometricManager.getBarometerPressure(),
-                new Func6<Signal, Location, List<BaseStation>, Battery, Geomagnetism, Barometric,Sample>() {
+                mWifiManager.getWifiResults(),
+                new Func7<Signal, Location, List<BaseStation>, Battery, Geomagnetism, Barometric, List<Wifi>, Sample>() {
                     @Override
-                    public Sample call(Signal signalRecord, Location location, List<BaseStation> cellularTowers, Battery battery, Geomagnetism geomagnetic, Barometric barometric) {
+                    public Sample call(Signal signalRecord, Location location, List<BaseStation> cellularTowers, Battery battery, Geomagnetism geomagnetic, Barometric barometric, List<Wifi> wifiList) {
                         Log.v(TAG, "start creating record...");
                         Sample record = new Sample();
                         if (location != null) {
@@ -81,6 +79,7 @@ public class SampleManager {
                         record.setMBS();
                         record.setGm(geomagnetic);
                         record.setBaro(barometric);
+                        record.setWifiList(WifiManager.list2RealmList(wifiList));
 
                         return record;
                     }

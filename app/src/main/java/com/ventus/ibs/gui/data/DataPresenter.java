@@ -10,27 +10,13 @@ import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.ventus.ibs.entity.Barometric;
-import com.ventus.ibs.entity.BaseStation;
-import com.ventus.ibs.entity.Battery;
-import com.ventus.ibs.model.serializer.BarometricSerializer;
-import com.ventus.ibs.model.serializer.BaseStationSerializer;
-import com.ventus.ibs.model.serializer.BatterySerializer;
-import com.ventus.ibs.model.serializer.GeomagnetismSerializer;
-import com.ventus.ibs.model.serializer.LatLngSerializer;
-import com.ventus.ibs.model.serializer.SignalSerialzer;
+import com.ventus.ibs.entity.*;
+import com.ventus.ibs.model.serializer.*;
 import com.ventus.ibs.util.Constants;
-import com.ventus.ibs.entity.DataSet;
-import com.ventus.ibs.entity.Device;
-import com.ventus.ibs.entity.Geomagnetism;
-import com.ventus.ibs.entity.LatLng;
-import com.ventus.ibs.entity.Sample;
-import com.ventus.ibs.entity.Signal;
 import com.ventus.ibs.gui.interf.DataContract;
 import com.ventus.ibs.model.DataHelper;
 import com.ventus.ibs.model.DeviceManager;
 import com.ventus.ibs.pojo.UploadResponse;
-import com.ventus.ibs.model.serializer.SampleSerializer;
 import com.ventus.ibs.util.Utils;
 
 import net.gotev.uploadservice.MultipartUploadRequest;
@@ -369,6 +355,7 @@ public class DataPresenter implements DataContract.Presenter {
                 .registerTypeAdapter(LatLng.class, new LatLngSerializer())
                 .registerTypeAdapter(Signal.class, new SignalSerialzer())
                 .registerTypeAdapter(Sample.class, new SampleSerializer())
+                .registerTypeAdapter(Wifi.class, new WifiSerializer())
                 .create();
         return gson.toJson(mRealm.copyFromRealm(sample));
     }
